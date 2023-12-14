@@ -9,7 +9,7 @@ from .models import User
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = fieldsets = (
-        (None, {"fields": ("cpf", "username", "password")}),
+        (None, {"fields": ("username", "cpf", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
             _("Permissions"),
@@ -30,11 +30,11 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("cpf", "password1", "password2"),
+                "fields": ("username", "cpf", "password1", "password2"),
             },
         ),
     )
-    list_display = ["cpf", "username", "email", "first_name", "last_name", "is_staff"]
+    list_display = ["username", "cpf", "email", "first_name", "last_name", "is_staff"]
 
 
 admin.site.register(User, CustomUserAdmin)

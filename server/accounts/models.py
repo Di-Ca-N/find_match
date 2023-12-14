@@ -4,8 +4,7 @@ from localflavor.br.models import BRCPFField
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=150, blank=True)
+    username = models.CharField(max_length=150, null=True, unique=True)
     cpf = BRCPFField(null=True, unique=True)
 
-    USERNAME_FIELD = 'cpf'
-
+    USERNAME_FIELD = 'username'
