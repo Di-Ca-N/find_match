@@ -1,2 +1,3 @@
 django
 django-localflavor
+Pillow

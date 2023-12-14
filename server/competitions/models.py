@@ -14,7 +14,7 @@ class Competition(models.Model):
     city = models.CharField(max_length=80)
     state = BRStateField()
     address = models.CharField(max_length=100)
-    image = models.FileField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, upload_to="competitions/")
 
     class Meta:
         verbose_name = "Competição"
@@ -24,4 +24,7 @@ class Competition(models.Model):
         return f"{self.title}"
 
     def get_absolute_url(self):
-        return reverse("competitions:detail", kwargs={"pk": self.pk})
+        return reverse("competitions:detail_competition", kwargs={"pk": self.pk})
+
+    def can_edit(self, user):
+        return user == self.organizer
