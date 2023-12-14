@@ -7,17 +7,27 @@ from sports.models import Modality
 
 
 class Competition(models.Model):
-    organizer = models.ForeignKey(User, on_delete=models.PROTECT)
-    modality = models.ForeignKey(Modality, on_delete=models.PROTECT)
-    title = models.CharField(max_length=50)
-    description = models.TextField()
-    datetime = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    city = models.CharField(max_length=80)
-    state = BRStateField()
-    address = models.CharField(max_length=100)
-    image = models.ImageField(null=True, blank=True, upload_to="competitions/")
-    max_slots = models.PositiveIntegerField(help_text="Total de vagas disponíveis. Se não quiser impor um limite de vagas, defina esse campo como 0", default=0)
+    organizer = models.ForeignKey(
+        User, on_delete=models.PROTECT, verbose_name="Organizador"
+    )
+    modality = models.ForeignKey(
+        Modality, on_delete=models.PROTECT, verbose_name="Modalidade"
+    )
+    title = models.CharField(max_length=50, verbose_name="Título")
+    description = models.TextField(verbose_name="Descrição")
+    datetime = models.DateTimeField(verbose_name="Data e Horário")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+    city = models.CharField(max_length=80, verbose_name="Cidade")
+    state = BRStateField(verbose_name="Estado")
+    address = models.CharField(max_length=100, verbose_name="Endereço")
+    image = models.ImageField(
+        null=True, blank=True, upload_to="competitions/", verbose_name="Imagem"
+    )
+    max_slots = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Número de vagas",
+        help_text="Se não quiser impor um limite de vagas, defina esse campo como 0",
+    )
 
     class Meta:
         verbose_name = "Competição"
