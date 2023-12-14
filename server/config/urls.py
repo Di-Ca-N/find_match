@@ -22,5 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("competitions/", include("competitions.urls")),
+    path("teams/", include("teams.urls")),
     path("", HomePageView.as_view()),
 ]

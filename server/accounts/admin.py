@@ -1,19 +1,15 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin, UserChangeForm
+from django.contrib.auth.admin import UserAdmin, UserChangeForm, UserCreationForm
+from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
+from django import forms
 
 from .models import User
 
 
-class CustomUserChangeForm(UserChangeForm):
-    class Meta(UserChangeForm.Meta):
-        model = User
-
-
 class CustomUserAdmin(UserAdmin):
-    form = CustomUserChangeForm
-    fieldsets = (
-        (None, {"fields": ("username", "password", "cpf")}),
+    fieldsets = fieldsets = (
+        (None, {"fields": ("cpf", "username", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
             _("Permissions"),
@@ -29,6 +25,16 @@ class CustomUserAdmin(UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("cpf", "password1", "password2"),
+            },
+        ),
+    )
+    list_display = ["cpf", "username", "email", "first_name", "last_name", "is_staff"]
 
 
 admin.site.register(User, CustomUserAdmin)

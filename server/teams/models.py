@@ -1,12 +1,10 @@
 from django.db import models
-
 from accounts.models import User
 from sports.models import Modality
 
 
 class Player(models.Model):
     account = models.OneToOneField(User, on_delete=models.CASCADE)
-    cpf = models.CharField(max_length=11)
 
     class Meta:
         verbose_name = "Jogador"
@@ -22,10 +20,16 @@ class Team(models.Model):
     class Meta:
         verbose_name = "Equipe"
         verbose_name_plural = "Equipes"
+        constraints = [
+            models.UniqueConstraint(fields=['name'], name='unique_team_name')
+        ]
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class TeamMember(models.Model):
-    user = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
 
