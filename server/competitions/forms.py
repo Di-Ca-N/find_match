@@ -11,3 +11,6 @@ class CompetitionForm(forms.ModelForm):
     class Meta:
         model = Competition
         fields = "__all__"
+        widgets = {
+            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
+        }

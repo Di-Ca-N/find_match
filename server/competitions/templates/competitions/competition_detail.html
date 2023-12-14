@@ -7,5 +7,7 @@
     <a href="{% url 'competitions:update_competition' pk=object.pk%}">Editar</a>
     
     <img src="{{object.image.url}}"/>
+    <p>Modalidade: {{object.modality}}</p>
+    <p>Nº de vagas: {{object.max_slots}}</p>
     <p>{{object.description}}</p>
 {% endblock %}
