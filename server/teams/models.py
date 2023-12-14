@@ -9,6 +9,9 @@ class Player(models.Model):
     class Meta:
         verbose_name = "Jogador"
         verbose_name_plural = "Jogadores"
+    
+    def __str__(self):
+        return f"Jogador: {account}"
 
 
 class Team(models.Model):
@@ -26,7 +29,12 @@ class Team(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    
+    def get_num_members(self):
+        return self.members.count() + 1
 
+    def is_complete(self):
+        return self.get_num_members() == self.modality.team_size        
 
 class TeamMember(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)

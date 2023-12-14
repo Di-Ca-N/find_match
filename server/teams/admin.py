@@ -9,7 +9,7 @@ class TeamMemberInline(admin.StackedInline):
 class TeamAdmin(admin.ModelAdmin):
     model = Team
     inlines = [TeamMemberInline]
-
+    list_display = ["__str__", "modality", "is_complete"]
 
 admin.site.register(Player)
 admin.site.register(Team, TeamAdmin)
