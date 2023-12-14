@@ -8,3 +8,6 @@ class User(AbstractUser):
     cpf = BRCPFField(null=True, unique=True)
 
     USERNAME_FIELD = 'username'
+
+    def __str__(self):
+        return f"User: {self.username}"

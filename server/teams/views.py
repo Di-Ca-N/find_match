@@ -1,7 +1,6 @@
-from django.shortcuts import render
 from django.views.generic import CreateView
 from .forms import TeamForm, MemberForm
-from .models import Player, Team, TeamMember
+from .models import Team, TeamMember
 
 
 class CreateTeamView(CreateView):
@@ -10,7 +9,7 @@ class CreateTeamView(CreateView):
 
     def get_initial(self):
         return {
-            "leader": Player.objects.get(account=self.request.user)
+            "leader": self.request.user
         }
 
 
