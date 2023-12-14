@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for team in object_list %}
+        <p>
+            <a href="{{team.get_absolute_url}}">{{team}}</a>
+        </p>
+    {% empty %}
+        <p>Você não faz parte de nenhum time</p>
+    {% endfor %}
+
+    {% if perms.teams.add_team %}
+        <a href="{% url 'teams:create_team' %}">Add team</a>
+    {% endif %}
+{% endblock content %}

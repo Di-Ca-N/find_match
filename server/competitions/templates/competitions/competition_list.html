@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{competitions}}
+    {{perms.competitions}}
     {% for competition in object_list %}
         <a href="{% url 'competitions:detail' pk=competition.id%}">{{competition}}</a>
     {% empty %}
         <p> Não há competições para mostrar </p>
     {% endfor %}
+
+    {% if perms.competitions.add_competition %}
+        <a href="{% url 'competitions:create_competition' %}">Criar competição</a>
+    {% endif %}
 {% endblock content %}

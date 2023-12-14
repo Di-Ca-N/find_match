@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 from accounts.models import User
 from sports.models import Modality
 
@@ -18,6 +20,9 @@ class Team(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    def get_absolute_url(self):
+        return reverse("teams:detail_team", kwargs={"pk": self.pk})
     
     def get_num_members(self):
         return self.members.count() + 1

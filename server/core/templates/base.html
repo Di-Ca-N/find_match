@@ -4,6 +4,16 @@
     <body>
         <h1>Find Match</h1>
 
+        {% if user.is_authenticated %}
+            {{user}}
+            <form action="{% url 'accounts:logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+
         {% block content %}
         {% endblock content %}
     </body>

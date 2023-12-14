@@ -8,8 +8,7 @@ from .models import User
 
 
 class CustomUserAdmin(UserAdmin):
-    pass
-    """fieldsets = fieldsets = (
+    fieldsets = fieldsets = (
         (None, {"fields": ("username", "cpf", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
         (
@@ -35,7 +34,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    list_display = ["username", "email", "first_name", "last_name", "is_staff"]"""
+    list_display = ["username", "email", "first_name", "last_name", "is_staff"]
 
 
 admin.site.register(User, CustomUserAdmin)
