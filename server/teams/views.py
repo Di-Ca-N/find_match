@@ -12,24 +12,21 @@ class CreateTeamView(LoginRequiredMixin, CreateView):
     form_class = TeamForm
 
     def get_initial(self):
-        return {
-            "leader": self.request.user
-        }
+        return {"leader": self.request.user}
 
 
 class AddMemberToTeamView(LoginRequiredMixin, CreateView):
     model = TeamMember
     form_class = MemberForm
-    template_name = 'teams/team_member_form.html'
-    
+    template_name = "teams/team_member_form.html"
+
     def get_initial(self):
-        return {
-            "team": Team.objects.get(pk=self.kwargs["team"])
-        }
+        return {"team": Team.objects.get(pk=self.kwargs["team"])}
+
 
 class ListTeams(LoginRequiredMixin, ListView):
     model = Team
-    
+
     def get_queryset(self) -> QuerySet[Any]:
         qs = super().get_queryset()
         return qs.filter(leader=self.request.user)

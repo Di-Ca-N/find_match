@@ -13,4 +13,3 @@ class CreateUserView(CreateView):
 
     def get_success_url(self) -> str:
         return reverse("home")
-    
