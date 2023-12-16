@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "competitions",
     "teams",
     "localflavor",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -111,7 +113,7 @@ LOGOUT_REDIRECT_URL = "/"
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pt-br"
 
 TIME_ZONE = "America/Sao_Paulo"
 
@@ -132,3 +134,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "media/"
+
+# Crispy Forms Settings
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

@@ -26,7 +26,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("competitions/", include("competitions.urls")),
     path("teams/", include("teams.urls")),
-    path("", HomePageView.as_view()),
+    path("", HomePageView.as_view(), name="home"),
 ]
 
 if settings.DEBUG:

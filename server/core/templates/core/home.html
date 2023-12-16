@@ -1,6 +1,105 @@
 {% extends 'base.html' %}
+{% load static%}
 
-{% block content %}
-    <h2>Home</h2>
-    <p>Olá, {{user.first_name}}</p>
+{% block pre-content %}
+<!-- início banner component -->
+<div class="text-center text-lg-start bg-find-match d-flex align-items-end home-banner py-4 mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="text-white fw-bold mx-3 fs-32 fs-lg-65">
+          Seu próximo desafio está aqui!
+        </h1>
+      </div>
+      <div class="col-12 row justify-content-center mt-3 mt-lg-5">
+        {% if user.is_authenticated %}
+          <form action="{% url 'accounts:logout' %}" method="POST" class="d-flex justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-find-match align-items-center d-flex mt-3 mt-lg-5">Logout</button>
+          </form>
+        {% else %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-find-match align-items-center d-flex justify-content-center mx-2">Faça seu cadastro</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-find-match align-items-center d-flex justify-content-center mx-2">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End banner component -->
+{% endblock pre-content %}
+
+
+{% block content%}
+  <div class="row">
+    <!-- início template card-event -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card mb-4 h-lg-100 border-0 card-event">
+        <img src="{% static 'core/images/running.jpg' %}" alt="" class="d-none d-lg-block">
+        <div class="card-body py-4">
+          <h5 class="card-title fs-24">Maratona de Verão</h5>
+          <p class="card-text">Local: Porto Alegre</p>
+          <p class="card-text">Preço: R$70,00</p>
+          <p class="card-text">Modalidade: Corrida</p>
+          <div class="card-footer br-8 border-0 bg-white justify-content-between d-flex p-0 pt-3">
+            <a href="" class="btn btn-date text-white border-0">
+              <div class="d-grid content-date">
+                <span class="date-text">Mar</span>
+                <span class="d-block date-num">6</span>
+                <span class="d-block date-week">| Domingo</span>
+              </div>
+            </a>
+            <a href="#" class="btn btn-find-match align-items-center d-flex">Inscrever-se</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- fim template card-event -->
+    <!-- início template card-event -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card mb-4 h-lg-100 border-0 card-event">
+        <img src="{% static 'core/images/running.jpg' %}" alt="" class="d-none d-lg-block">
+        <div class="card-body py-4">
+          <h5 class="card-title fs-24">Maratona de Verão</h5>
+          <p class="card-text">Local: Porto Alegre</p>
+          <p class="card-text">Preço: R$70,00</p>
+          <p class="card-text">Modalidade: Corrida</p>
+          <div class="card-footer br-8 border-0 bg-white justify-content-between d-flex p-0 pt-3">
+            <a href="" class="btn btn-date text-white border-0">
+              <div class="d-grid content-date">
+                <span class="date-text">Mar</span>
+                <span class="d-block date-num">6</span>
+                <span class="d-block date-week">| Domingo</span>
+              </div>
+            </a>
+            <a href="#" class="btn btn-find-match align-items-center d-flex">Inscrever-se</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- fim template card-event -->
+    <!-- início template card-event -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card mb-4 h-lg-100 border-0 card-event">
+        <img src="{% static 'core/images/running.jpg' %}" alt="" class="d-none d-lg-block">
+        <div class="card-body py-4">
+          <h5 class="card-title fs-24">Maratona de Verão</h5>
+          <p class="card-text">Local: Porto Alegre</p>
+          <p class="card-text">Preço: R$70,00</p>
+          <p class="card-text">Modalidade: Corrida</p>
+          <div class="card-footer br-8 border-0 bg-white justify-content-between d-flex p-0 pt-3">
+            <a href="" class="btn btn-date text-white border-0">
+              <div class="d-grid content-date">
+                <span class="date-text">Mar</span>
+                <span class="d-block date-num">6</span>
+                <span class="d-block date-week">| Domingo</span>
+              </div>
+            </a>
+            <a href="#" class="btn btn-find-match align-items-center d-flex">Inscrever-se</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- fim template card-event -->
+  </div>
+</main>
 {% endblock content %}

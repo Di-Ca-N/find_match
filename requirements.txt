@@ -1,3 +1,5 @@
 django
 django-localflavor
 Pillow
+django-crispy-forms
+crispy-bootstrap5

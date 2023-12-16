@@ -14,6 +14,11 @@ class CreateTeamView(LoginRequiredMixin, CreateView):
     def get_initial(self):
         return {"leader": self.request.user}
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Cadastrar um time"
+        return context
+
 
 class AddMemberToTeamView(LoginRequiredMixin, CreateView):
     model = TeamMember

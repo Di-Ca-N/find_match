@@ -1,11 +1,12 @@
 from django import forms
+from django.contrib.auth.models import Group
 from .models import User
 
 
 class UserCreationForm(forms.ModelForm):
-    name = forms.CharField(max_length=150)
-    password1 = forms.CharField(widget=forms.PasswordInput, strip=False)
-    password2 = forms.CharField(widget=forms.PasswordInput, strip=False)
+    name = forms.CharField(max_length=150, label="Nome")
+    password1 = forms.CharField(widget=forms.PasswordInput, strip=False, label="Senha")
+    password2 = forms.CharField(widget=forms.PasswordInput, strip=False, label="Repita sua senha")
 
     class Meta:
         model = User
