@@ -93,12 +93,29 @@ li {
 
 }
 
-.fs-24 {
-  font-size: 24px;
+.map {
+  height: 224px;
+  border-radius: 12px;
+}
+
+.login {
+  background-color: var(--green);
+  border-radius: 12px;
+  color: var(--white);
+  height: 50px;
+  width: 80px;
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 160px;
+
 }
 
 @media (min-width: 992px) {
   .home-banner {
     height: 470px;
+  }
+
+  .map {
+    height: 620px;
   }
 }
