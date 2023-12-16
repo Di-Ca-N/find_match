@@ -7,5 +7,5 @@ urlpatterns = [
     path("create/", views.CreateTeamView.as_view(), name="create_team"),
     path("<int:team>/add_member/", views.AddMemberToTeamView.as_view()),
     path("<int:pk>/", views.DetailTeam.as_view(), name="detail_team"),
-    path("", views.ListTeams.as_view()),
+    path("", views.ListTeams.as_view(), name="list_teams"),
 ]

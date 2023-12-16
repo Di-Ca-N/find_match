@@ -1,15 +1,50 @@
-{% extends 'base.html' %}
+{% extends 'teams/team_base.html' %}
 
 {% block content %}
-    {% for team in object_list %}
-        <p>
-            <a href="{{team.get_absolute_url}}">{{team}}</a>
-        </p>
-    {% empty %}
-        <p>Você não faz parte de nenhum time</p>
-    {% endfor %}
+    <h1>Times</h1>
+    
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Equipe</th>
+                    <th>Modalidade</th>
+                    <th>Nº de Integrantes</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in object_list %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{team}}</td>
+                        <td>{{team.modality}}</td>
+                        <td>{{team.get_num_members}}</td>
+                        <td>
+                            <a href="{{team.get_absolute_url}}"><i class="material-icons">info</i></a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="100">Você não faz parte de nenhum time</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <td colspan="100">
+                    {% if perms.teams.add_team %}
+                        <a href="{% url 'teams:create_team' %}" class="btn btn-find-match d-flex align-items-center justify-content-center">Add team</a>
+                    {% endif %}
+                </div>
+            </tfoot>
+            </table>
+            </div>
+            </table>
+        </table>    
+    </div>
+    
+    
 
-    {% if perms.teams.add_team %}
-        <a href="{% url 'teams:create_team' %}">Add team</a>
-    {% endif %}
+
 {% endblock content %}

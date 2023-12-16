@@ -6,10 +6,10 @@ from sports.models import Modality
 
 
 class Team(models.Model):
-    name = models.CharField(max_length=50)
-    leader = models.ForeignKey(User, on_delete=models.PROTECT, related_name="leads")
-    members = models.ManyToManyField(User, through="teams.TeamMember")
-    modality = models.ForeignKey(Modality, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, verbose_name="Nome")
+    leader = models.ForeignKey(User, on_delete=models.PROTECT, related_name="leads", verbose_name="Líder")
+    members = models.ManyToManyField(User, through="teams.TeamMember", verbose_name="Membros")
+    modality = models.ForeignKey(Modality, on_delete=models.CASCADE, verbose_name="Modalidade")
 
     class Meta:
         verbose_name = "Equipe"

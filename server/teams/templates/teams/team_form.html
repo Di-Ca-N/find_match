@@ -1,9 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'teams/team_base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+    <h1>{{title}}</h1>
     <form method="POST">
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Enviar</button>
+        {{form|crispy}}
+        <button type="submit" class="btn btn-find-match">Enviar</button>
     </form>
 {% endblock content %}

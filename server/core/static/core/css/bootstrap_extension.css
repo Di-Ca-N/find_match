@@ -1,0 +1,146 @@
+/* Bootstrap Extention Classes */
+
+.br-8 {
+  border-radius: 8px;
+}
+
+.px-32 {
+  padding: 32px;
+}
+
+.h-68 {
+  height: 68px;
+}
+
+.bg-blue-light {
+  background-color: var(--blue-100);
+}
+
+.bg-blue {
+  background-color: var(--blue-300);
+}
+
+.bg-blue-medium {
+  background-color: var(--blue-500);
+}
+
+.bg-gray {
+  background-color: var(--gray);
+}
+
+.btn-al-advogados {
+  width: 255px;
+}
+
+.btn-gold {
+  background-color: var(--gold);
+  color: var(--white);
+}
+
+.btn-gold:hover {
+  background-color: #7d620d;
+  color: var(--white);
+}
+
+.btn-dark {
+  background-color: var(--blue-800) !important;
+  color: var(--white);
+}
+
+.btn-dark:hover {
+  background-color: #091017 !important;
+  color: var(--white);
+}
+
+.text-white {
+  color: var(--white);
+}
+
+.text-gold {
+  color: var(--gold);
+}
+
+.text-blue {
+  color: var(--blue-500);
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.my-128 {
+  margin-top: 128px;
+  margin-bottom: 128px;
+}
+
+.fs-18 {
+  font-size: 18px;
+}
+
+.fs-32 {
+  font-size: 32px;
+}
+
+.fs-48 {
+  font-size: 48px;
+}
+
+.g-column-1 {
+  grid-column: 1;
+}
+
+.g-column-2 {
+  grid-column: 2;
+}
+
+.g-row-1 {
+  grid-row: 1;
+}
+
+.g-row-2 {
+  grid-row: 2;
+}
+
+.g-column-1-span-2 {
+  grid-column: 1 / span 2;
+}
+
+@media (min-width: 992px) {
+  .h-lg-50 {
+    height: 50%;
+  }
+
+  .fs-lg-18 {
+    font-size: 18px;
+  }
+
+  .fs-lg-24 {
+    font-size: 24px;
+  }
+
+  .fs-lg-48 {
+    font-size: 48px;
+  }
+
+  .fs-lg-65 {
+    font-size: 65px;
+  }
+
+  .fs-lg-32 {
+    font-size: 32px;
+  }
+
+  .w-lg-100 {
+    width: 100%;
+  }
+
+  .h-lg-100 {
+    height: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+}
+
+@media (min-width: 1400px) {
+}
