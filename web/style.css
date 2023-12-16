@@ -96,3 +96,9 @@ li {
 .fs-24 {
   font-size: 24px;
 }
+
+@media (min-width: 992px) {
+  .home-banner {
+    height: 470px;
+  }
+}
