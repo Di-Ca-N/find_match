@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
+    <h1>Adicionar jogador ao time {{team}}</h1>
     <form method="POST">
         {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Enviar</button>
+        {{form | crispy}}
+        <button type="submit" class="btn btn-find-match login p-3">Enviar</button>
     </form>
 {% endblock content %}

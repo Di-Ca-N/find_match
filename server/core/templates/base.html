@@ -34,7 +34,7 @@
             <a class="nav-link" href="#">Sobre nós</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Eventos</a>
+            <a class="nav-link" href="{% url 'competitions:list_competition' %}">Eventos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Contato</a>
@@ -45,6 +45,14 @@
           </li>
           {% endif %}
         </ul>
+        {% if user.is_authenticated %}
+          <form method="POST" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button href="{% url 'accounts:login' %}" class="btn btn-find-match login ms-3">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="btn btn-find-match login ms-3">Login</a>
+        {% endif %}
         <!-- <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Busca" aria-label="Busca">
           <button class="btn btn-outline-success" type="submit">Busca</button>

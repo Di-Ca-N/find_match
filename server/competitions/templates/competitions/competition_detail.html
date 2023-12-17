@@ -2,12 +2,38 @@
 
 {% load static %}
 
+{% block pre-content %}
+<div class="text-center bg-find-match d-flex align-items-center py-5 py-4 mb-4">
+    <div class="container">
+        <div class="row mx-0 w-100">
+            <div class="col-12">
+                <h1 class="text-white fw-bold mx-3 fs-32 fs-lg-65 py-5">
+                {{object.title}}
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock pre-content %}
+
+
+
 {% block content %}
-    <h1>{{object.title}}</h1>
-    <a href="{% url 'competitions:update_competition' pk=object.pk%}">Editar</a>
-    
-    <img src="{{object.image.url}}"/>
-    <p>Modalidade: {{object.modality}}</p>
-    <p>Nº de vagas: {{object.max_slots}}</p>
-    <p>{{object.description}}</p>
+    <div class="row px-2">
+        <div class="col-12">
+            <p>Modalidade: {{object.modality}}</p>
+            {% if object.max_slots != 0%}
+                <p>Nº de vagas: {{object.max_slots}}</p>
+            {% endif %}
+        </div>
+      <div class="col-12">
+        <p class="text-justify">{{object.description}}</p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <img src="{{object.image.url}}" alt="" class="img-event m-5">
+        <div class="col-12">
+            <a href="#" class="btn btn-find-match">Inscrever-se</a>
+        </div>
+    </div>
 {% endblock %}

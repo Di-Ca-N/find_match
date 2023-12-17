@@ -4,7 +4,7 @@ from . import views
 
 app_name = "competitions"
 urlpatterns = [
-    path("", views.CompetitionListView.as_view()),
+    path("", views.CompetitionListView.as_view(), name="list_competition"),
     path("<int:pk>/", views.CompetitionDetailView.as_view(), name="detail_competition"),
     path(
         "update/<int:pk>/",

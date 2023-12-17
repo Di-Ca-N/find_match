@@ -1,7 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Equipe: {{team}}</h2>
+    <h1>Equipe: {{team}}</h1>
     <p>Modalidade: {{team.modality}}</p>
 
+    <h2> Integrantes </h2>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for member in team.get_members %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ member.get_full_name }}</td>
+                        <td>{{ member.cpf }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="100">
+                            <a href="{% url 'teams:team_add_member' team=team.pk%}">Adicionar integrante</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 {% endblock content %}

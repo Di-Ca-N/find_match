@@ -28,6 +28,7 @@ class Competition(models.Model):
         verbose_name="Número de vagas",
         help_text="Se não quiser impor um limite de vagas, defina esse campo como 0",
     )
+    subscription_price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Preço da inscrição", default=0)
 
     class Meta:
         verbose_name = "Competição"

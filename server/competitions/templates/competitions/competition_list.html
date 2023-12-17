@@ -1,6 +1,26 @@
 {% extends 'base.html' %}
 
+{% block pre-content %}
+<div class="text-center bg-find-match d-flex align-items-center py-5 mb-4">
+    <div class="container">
+      <div class="row mx-0 w-100">
+        <div class="col-12">
+          <h1 class="text-white fw-bold mx-3 fs-32 fs-lg-65 py-5">
+            Eventos
+          </h1>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock pre-content %}
+
 {% block content %}
+    <div class="row">
+        {% for competition in object_list %}
+            {% include "competitions/competition_card.html" %}
+        {% endfor %}
+    </div>
+    {% comment %}
     <ul>
         <li>
         {% for competition in object_list %}
@@ -10,6 +30,7 @@
         {% endfor %}
         </li>
     </ul>
+    {% endcomment %}
 
     {% if perms.competitions.add_competition %}
         <a href="{% url 'competitions:create_competition' %}">Criar competição</a>

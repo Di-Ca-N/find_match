@@ -11,9 +11,11 @@ body {
 
 a {
   text-decoration: none;
-  color: var(--white);
 }
 
+footer a {
+  color: var(--white);
+}
 a:hover {
   color: var(--blue) !important;
 }
@@ -71,10 +73,6 @@ li {
   border-radius: 12px;
   color: var(--green);
   background-color: var(--white);
-  height: 60px;
-  padding-left: 16px;
-  padding-right: 16px;
-  max-width: 160px;
 }
 
 .btn-find-match:hover {
@@ -97,12 +95,34 @@ li {
 
 }
 
-.fs-24 {
-  font-size: 24px;
+.map {
+  height: 224px;
+  border-radius: 12px;
+}
+
+.login {
+  background-color: var(--green);
+  border-radius: 12px;
+  color: var(--white);
 }
 
 @media (min-width: 992px) {
   .home-banner {
     height: 470px;
   }
+
+  .map {
+    height: 620px;
+  }
+}
+
+.card-img-top {
+  width: 100%;
+  height: 15vw;
+  object-fit: cover;
+}
+.img-event {
+  max-height: 400px;
+  max-width: 300px;
+  aspect-ratio: initial;
 }

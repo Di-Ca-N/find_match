@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 
 from accounts.models import User
@@ -23,6 +24,11 @@ class Team(models.Model):
 
     def get_absolute_url(self):
         return reverse("teams:detail_team", kwargs={"pk": self.pk})
+
+    def get_members(self):
+        members = [self.leader]
+        members.extend(self.members.all())
+        return members
 
     def get_num_members(self):
         return self.members.count() + 1

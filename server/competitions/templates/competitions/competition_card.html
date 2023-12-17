@@ -1,0 +1,22 @@
+{% load static %}
+<div class="col-12 col-md-6 col-lg-4 mb-4">
+    <div class="card h-lg-100 border-0 card-event">
+        <img src="{{competition.image.url}}" alt="" class="card-img-top">
+        <div class="card-body">
+            <h5 class="card-title fs-24">{{competition.title}}</h5>
+            <p class="card-text">Local: {{competition.city}}/{{competition.state}}</p>
+            <p class="card-text">Preço: {% if competition.subscription_price > 0 %}R${{competition.subscription_price}}{% else %}Gratuito{% endif %}</p>
+            <p class="card-text">Modalidade: {{competition.modality}}</p>
+            <div class="card-footer br-8 border-0 bg-white justify-content-between d-flex p-0 pt-3">
+                <div class="btn btn-date text-white border-0">
+                    <div class="d-grid content-date">
+                        <span class="date-text">{{competition.datetime|date:"M"}}</span>
+                        <span class="d-block date-num">{{competition.datetime|date:"j"}}</span>
+                        <span class="d-block date-week">| Domingo</span>
+                    </div>
+                </div>
+                <a href="{% url 'competitions:detail_competition' pk=competition.id %}" class="btn btn-find-match align-items-center d-flex">Ver Evento</a>
+            </div>
+        </div>
+    </div>
+</div>
