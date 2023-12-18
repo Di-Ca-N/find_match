@@ -3,18 +3,19 @@
 
 {% block pre-content %}
 <!-- início banner component -->
-<div class="text-center text-lg-start bg-find-match d-flex align-items-end home-banner py-4 mb-4">
+<div class="text-center text-lg-start bg-find-match d-flex align-items-end home-banner py-4 py-lg-5 mb-4">
   <div class="container">
     <div class="row">
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 d-lg-flex flex-lg-column justify-content-lg-around">
         <h1 class="text-white fw-bold mx-3 fs-32 fs-lg-65">
           Seu próximo desafio está aqui!
         </h1>
-      </div>
-      <div class="col-12 mt-3 mt-lg-5">
         {% if not user.is_authenticated %}
-          <a href="{% url 'accounts:register' %}" class="p-3 btn btn-find-match">Faça seu cadastro</a>
+          <a href="{% url 'accounts:register' %}" class="p-3 btn btn-find-match ms-auto mt-3 mt-lg-0">Faça seu cadastro</a>
         {% endif %}
+      </div>
+      <div class="col-12 col-lg-6 mt-3 mt-lg-0  ">
+        <img src="{% static 'core/images/Fireflyillustration.png' %}" alt="" width="100%"> 
       </div>
     </div>
   </div>
