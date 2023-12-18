@@ -37,7 +37,10 @@ class MemberForm(forms.ModelForm):
     def save(self, commit=True):
         user, _ = User.objects.get_or_create(
             cpf=self.cleaned_data["cpf"],
-            defaults={"first_name": self.cleaned_data["first_name"], "last_name": self.cleaned_data["last_name"]},
+            defaults={
+                "first_name": self.cleaned_data["first_name"],
+                "last_name": self.cleaned_data["last_name"],
+            },
         )
         self.instance.user = user
         return super().save(commit)

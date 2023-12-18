@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from competitions.models import Competition
 
+
 class HomePageView(TemplateView):
     template_name = "core/home.html"
 

@@ -5,15 +5,17 @@ from .models import User
 
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput, strip=False, label="Senha")
-    password2 = forms.CharField(widget=forms.PasswordInput, strip=False, label="Repita sua senha")
+    password2 = forms.CharField(
+        widget=forms.PasswordInput, strip=False, label="Repita sua senha"
+    )
 
     class Meta:
         model = User
         fields = ["username", "first_name", "last_name", "cpf", "email"]
         labels = {"first_name": "Nome", "last_name": "Sobrenome"}
         widgets = {
-            "first_name": forms.TextInput(attrs={'class': 'col-lg-6'}),
-            "last_name": forms.TextInput(attrs={'class': 'col-lg-6'})
+            "first_name": forms.TextInput(attrs={"class": "col-lg-6"}),
+            "last_name": forms.TextInput(attrs={"class": "col-lg-6"}),
         }
 
     def clean_password2(self):

@@ -20,6 +20,7 @@ class CreateTeamView(LoginRequiredMixin, CreateView):
         context["title"] = "Cadastrar time"
         return context
 
+
 class UpdateTeamView(LoginRequiredMixin, UpdateView):
     model = Team
     form_class = TeamForm

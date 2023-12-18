@@ -20,7 +20,7 @@ class CreateUserView(CreateView):
             return HttpResponseRedirect(reverse("home"))
         else:
             return super().get(request, *args, **kwargs)
-    
+
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         response = super().form_valid(form)
         user = self.object

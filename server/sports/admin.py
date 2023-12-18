@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Sport, Modality
 
+
 class ModalityInline(admin.TabularInline):
     model = Modality
     extra = 1
@@ -9,4 +10,3 @@ class ModalityInline(admin.TabularInline):
 @admin.register(Sport)
 class SportAdmin(admin.ModelAdmin):
     inlines = [ModalityInline]
-

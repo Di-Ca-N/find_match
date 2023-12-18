@@ -24,6 +24,7 @@ class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         context["title"] = "Criar competição"
         return context
 
+
 class CompetitionDetailView(DetailView):
     model = Competition
 

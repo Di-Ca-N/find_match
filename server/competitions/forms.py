@@ -10,7 +10,19 @@ class CompetitionForm(forms.ModelForm):
 
     class Meta:
         model = Competition
-        fields = ["title", "modality", "description", "datetime", "city", "state", "address", "image", "max_slots", "subscription_price", "organizer"]
+        fields = [
+            "title",
+            "modality",
+            "description",
+            "datetime",
+            "city",
+            "state",
+            "address",
+            "image",
+            "max_slots",
+            "subscription_price",
+            "organizer",
+        ]
         widgets = {
             "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
         }
