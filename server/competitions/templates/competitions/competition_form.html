@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Enviar</button>
-    </form>
+    <h1>{{title}}</h1>
+    <div class="row">
+        <form class="col-lg-6" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form | crispy}}
+            <button type="submit" class="btn btn-find-match login">Salvar</button>
+        </form>
+    </div>
 {% endblock content %}

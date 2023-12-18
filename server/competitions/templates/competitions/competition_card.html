@@ -4,7 +4,7 @@
         <img src="{{competition.image.url}}" alt="" class="card-img-top">
         <div class="card-body">
             <h5 class="card-title fs-24">{{competition.title}}</h5>
-            <p class="card-text">Local: {{competition.city}}/{{competition.state}}</p>
+            <p class="card-text">Local: {% if competition.city %}{{competition.city}}/{{competition.state}}{% else %}--{%endif%}</p>
             <p class="card-text">Preço: {% if competition.subscription_price > 0 %}R${{competition.subscription_price}}{% else %}Gratuito{% endif %}</p>
             <p class="card-text">Modalidade: {{competition.modality}}</p>
             <div class="card-footer br-8 border-0 bg-white justify-content-between d-flex p-0 pt-3">

@@ -21,10 +21,14 @@
 {% block content %}
     <div class="row px-2">
         <div class="col-12">
-            <p>Modalidade: {{object.modality}}</p>
+            <p><b>Modalidade:</b> {{object.modality}}</p>
             {% if object.max_slots != 0%}
-                <p>Nº de vagas: {{object.max_slots}}</p>
+                <p><b>Nº de vagas:</b> {{object.max_slots}}</p>
             {% endif %}
+            {% if object.city %}
+                <p><b>Endereço:</b> {{object.city}}/{{object.state}} - {{object.address}}</p>
+            {% endif %}
+            <p><b>Preço de Inscrição:</b> {% if competition.subscription_price > 0 %}R${{competition.subscription_price}}{% else %}Gratuito{% endif %}</p>
         </div>
       <div class="col-12">
         <p class="text-justify">{{object.description}}</p>

@@ -17,9 +17,9 @@ class Competition(models.Model):
     description = models.TextField(verbose_name="Descrição")
     datetime = models.DateTimeField(verbose_name="Data e Horário")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
-    city = models.CharField(max_length=80, verbose_name="Cidade")
-    state = BRStateField(verbose_name="Estado")
-    address = models.CharField(max_length=100, verbose_name="Endereço")
+    city = models.CharField(max_length=80, verbose_name="Cidade", blank=True)
+    state = BRStateField(verbose_name="Estado", blank=True)
+    address = models.CharField(max_length=100, verbose_name="Endereço", blank=True)
     image = models.ImageField(
         null=True, blank=True, upload_to="competitions/", verbose_name="Imagem"
     )

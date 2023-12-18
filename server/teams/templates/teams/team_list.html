@@ -21,7 +21,7 @@
                         <td>{{forloop.counter}}</td>
                         <td><a href="{% url 'teams:detail_team' pk=team.id%}">{{team}}</a></td>
                         <td>{{team.modality}}</td>
-                        <td>{{team.get_num_members}}</td>
+                        <td>{{team.get_num_members}}/{{team.modality.team_size}}</td>
                         <td>{{team.is_complete|yesno:"Sim,Não"}}</td>
                         <td>
                             <a href="{{team.get_absolute_url}}"><i class="material-icons">info</i></a>
@@ -36,7 +36,7 @@
             <tfoot>
                 <td colspan="100">
                     {% if perms.teams.add_team %}
-                        <a href="{% url 'teams:create_team' %}" class="btn btn-find-match login">Add team</a>
+                        <a href="{% url 'teams:create_team' %}" class="btn btn-find-match login">Criar time</a>
                     {% endif %}
                 </div>
             </tfoot>
