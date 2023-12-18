@@ -1,6 +1,12 @@
 from django.contrib import admin
 from .models import Sport, Modality
 
-admin.site.register(Sport)
-admin.site.register(Modality)
-# Register your models here.
+class ModalityInline(admin.TabularInline):
+    model = Modality
+    extra = 1
+
+
+@admin.register(Sport)
+class SportAdmin(admin.ModelAdmin):
+    inlines = [ModalityInline]
+
