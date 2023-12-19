@@ -91,7 +91,7 @@
         <img src="{% static 'core/images/logo.png' %}" alt="Logo" height="68" class="ms-5 g-column-1 g-row-1" />
         <ul class="d-lg-flex flex-lg-row justify-content-center mb-0 g-column-1-span-2 g-row-1">
           <li class="me-lg-3"><a href="#">Sobre nós</a></li>
-          <li class="me-lg-3"><a href="#">Eventos</a></li>
+          <li class="me-lg-3"><a href="{% url 'competitions:list_competition' %}">Eventos</a></li>
           <li><a href="">Contato</a></li>
         </ul>
       </div>
@@ -104,19 +104,3 @@
   {% block scripts_extra %}
   {% endblock scripts_extra %}
 </body>
-
-<!-- </html>
-    <body>
-        <h1>Find Match</h1>
-
-        {% if user.is_authenticated %}
-            {{user}}
-            <form action="{% url 'accounts:logout' %}" method="POST">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        {% else %}
-            <a href="{% url 'accounts:login' %}">Login</a>
-        {% endif %}
-    </body>
-</html> -->
