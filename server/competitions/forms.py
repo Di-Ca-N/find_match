@@ -21,8 +21,10 @@ class CompetitionForm(forms.ModelForm):
             "image",
             "max_slots",
             "subscription_price",
+            "subscription_until",
             "organizer",
         ]
         widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
+            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
+            "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
         }

@@ -16,6 +16,7 @@ class Competition(models.Model):
     title = models.CharField(max_length=50, verbose_name="Título")
     description = models.TextField(verbose_name="Descrição")
     datetime = models.DateTimeField(verbose_name="Data e Horário")
+    subscription_until = models.DateTimeField(verbose_name="Prazo de inscrição")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     city = models.CharField(max_length=80, verbose_name="Cidade", blank=True)
     state = BRStateField(verbose_name="Estado", blank=True)
