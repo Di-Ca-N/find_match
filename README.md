@@ -1,6 +1,6 @@
 # Find Match
 
-## Instalando e executando a aplicação
+## Como instalar e executar a aplicação
 ```
 pip install -r requirements.txt
 cd server
