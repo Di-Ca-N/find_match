@@ -28,3 +28,25 @@ class CompetitionForm(forms.ModelForm):
             "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
             "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
         }
+
+class CompetitionSignForm(forms.ModelForm):
+    class Meta:
+        model = Competition
+        fields = [
+            "title",
+            "modality",
+            "description",
+            "datetime",
+            "city",
+            "state",
+            "address",
+            "image",
+            "max_slots",
+            "subscription_price",
+            "subscription_until",
+            "organizer",
+        ]
+        widgets = {
+            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
+            "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
+        }
