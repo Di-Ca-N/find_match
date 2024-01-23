@@ -37,7 +37,7 @@
     <div class="row d-flex justify-content-center">
         <img src="{{object.image.url}}" alt="" class="img-event m-5">
         <div class="col-12">
-            <a href="#" class="btn btn-find-match">Inscrever-se</a>
+            <a href="{% url 'competitions:competition_sign' pk=object.id %}" class="btn btn-find-match">Inscrever-se</a>
         </div>
     </div>
 {% endblock %}

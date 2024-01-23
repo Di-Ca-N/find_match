@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from accounts.models import User
 from sports.models import Modality
+from teams.models import Team
 
 
 class Competition(models.Model):
@@ -45,3 +46,21 @@ class Competition(models.Model):
 
     def can_edit(self, user):
         return user == self.organizer
+    
+class CompetitionSubscription(models.Model):
+    competition = models.ForeignKey(
+        Competition, on_delete=models.PROTECT, verbose_name="Competição"
+    )
+    team = models.ForeignKey(
+        Team, on_delete=models.PROTECT, verbose_name="Time"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+    paid = models.BooleanField(default=False, verbose_name="Pago")
+    paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
+
+    class Meta:
+        verbose_name = "Inscrição"
+        verbose_name_plural = "Inscrições"
+
+    def __str__(self):
+        return f"{self.team} - {self.competition}"

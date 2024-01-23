@@ -4,6 +4,7 @@ from . import views
 
 app_name = "competitions"
 urlpatterns = [
+    path("<int:pk>/sign/", views.addTeamToCompetitionView.as_view(), name="competition_sign"),
     path("", views.CompetitionListView.as_view(), name="list_competition"),
     path("<int:pk>/", views.CompetitionDetailView.as_view(), name="detail_competition"),
     path(

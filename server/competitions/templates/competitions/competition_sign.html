@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>{{title}}</h1>
+    <div class="row">
+        <form class="col-lg-6" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form | crispy}}
+            <a href="#" class="p-3 btn btn-find-match ms-auto mt-3 mt-lg-0">Baixe seu boleto de pagamento</a>
+            <button type="submit" class="btn btn-find-match login">Confirmar inscrição</button>
+        </form>
+    </div>
+{% endblock content %}

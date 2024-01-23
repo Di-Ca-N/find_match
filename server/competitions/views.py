@@ -41,3 +41,26 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
 
 
 # Create your views here.
+class addTeamToCompetitionView(CreateView):
+    model = Competition
+    form_class = CompetitionForm
+    template_name = "competitions/competition_sign.html"
+    permission_required = "competitions.add_competition"
+
+    # def has_permission(self) -> bool:
+    #     has_permission = super().has_permission()
+    #     team_leader = Competition.objects.get(pk=self.kwargs["competition"]).leader
+    #     is_leader = self.request.user == team_leader
+    #     return has_permission and is_leader
+
+    # def get_initial(self):
+    #     return {"competition": Competition.objects.get(pk=self.kwargs["competition"])}
+
+    # def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    #     context = super().get_context_data(**kwargs)
+    #     context["competition"] = Competition.objects.get(pk=self.kwargs["competition"])
+    #     return context
+
+    # def get_success_url(self) -> str:
+    #     competition = Competition.objects.get(pk=self.kwargs["competition"])
+    #     return reverse("competitions:detail_competition", kwargs={"pk": competition.id})
