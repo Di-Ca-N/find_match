@@ -3,7 +3,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+from django.http import HttpResponseRedirect
+from django.db import transaction
 from .models import Competition, CompetitionSubscription
 from .forms import CompetitionForm, CompetitionSubscribeForm
 
@@ -55,7 +56,7 @@ class addTeamToCompetitionView(CreateView, LoginRequiredMixin, PermissionRequire
         return has_permission and is_leader
 
     def get_initial(self):
-        competition_id = self.kwargs.get("competition")
+        competition_id = self.kwargs.get("pk")
         return {"competition": competition_id}
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -65,8 +66,21 @@ class addTeamToCompetitionView(CreateView, LoginRequiredMixin, PermissionRequire
         return context
 
     def get_success_url(self) -> str:
-        competition = Competition.objects.get(pk=self.kwargs["competition"])
-        return reverse("competitions:dashboard")
+        competition = Competition.objects.get(pk=self.kwargs["pk"])
+        return reverse("competitions:dashboard", kwargs={"pk": competition.pk})
+    
+    def form_valid(self, form):
+        with transaction.atomic():
+            competition = Competition.objects.select_for_update().get(pk=self.kwargs["pk"])
+            response = super(addTeamToCompetitionView, self).form_valid(form)
+            if competition.max_slots > 0:
+                competition.max_slots -= 1
+                competition.save()
+                return response
+            else:
+                # error message
+                self.request.session["error_message"] = "Não há mais vagas disponíveis"
+                return HttpResponseRedirect(reverse("competitions:dashboard", kwargs={"pk": competition.pk}))
 
-def CompetitionDashboardView(request):
-    return render(request, "competitions/dashboard.html")
+def CompetitionDashboardView(request, pk):
+    return render(request, "competitions/dashboard.html", {"competition": Competition.objects.get(pk=pk)})

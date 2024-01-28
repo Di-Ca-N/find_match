@@ -85,5 +85,6 @@ class CompetitionSubscription(models.Model):
     def __str__(self):
         return f"{self.team} - {self.competition}"
     
-    def get_absolute_url(self):
-        return reverse("competitions:dashboard")
+    # def get_absolute_url(self):
+    #     competition_pk = Competition.objects.get("pk")
+    #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
