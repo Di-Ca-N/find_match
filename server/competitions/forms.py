@@ -1,6 +1,6 @@
 from django import forms
 from accounts.models import User
-from .models import Competition
+from .models import Competition, CompetitionSubscription
 
 
 class CompetitionForm(forms.ModelForm):
@@ -29,24 +29,14 @@ class CompetitionForm(forms.ModelForm):
             "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
         }
 
-class CompetitionSignForm(forms.ModelForm):
+class CompetitionSubscribeForm(forms.ModelForm):
+    competition = forms.ModelChoiceField(
+        Competition.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
+    )
     class Meta:
-        model = Competition
+        model = CompetitionSubscription
         fields = [
-            "title",
-            "modality",
-            "description",
-            "datetime",
-            "city",
-            "state",
-            "address",
-            "image",
-            "max_slots",
-            "subscription_price",
-            "subscription_until",
-            "organizer",
+            "team",
+            "competition",
         ]
-        widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
-            "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
-        }
+       

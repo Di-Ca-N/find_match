@@ -1,6 +1,7 @@
 from django.db import models
 from localflavor.br.models import BRStateField
 from django.urls import reverse
+from django.utils import timezone
 
 from accounts.models import User
 from sports.models import Modality
@@ -46,7 +47,12 @@ class Competition(models.Model):
 
     def can_edit(self, user):
         return user == self.organizer
-    
+
+class SubscriptionStatus(models.TextChoices):   
+    PENDING = "PENDING", "Pendente"
+    CONFIRMED = "CONFIRMED", "Confirmada"
+    CANCELED = "CANCELED", "Cancelada"
+
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
         Competition, on_delete=models.PROTECT, verbose_name="Competição"
@@ -55,8 +61,22 @@ class CompetitionSubscription(models.Model):
         Team, on_delete=models.PROTECT, verbose_name="Time"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
-    paid = models.BooleanField(default=False, verbose_name="Pago")
+    status = models.CharField(
+        max_length=10, choices=SubscriptionStatus.choices, default=SubscriptionStatus.PENDING
+    )
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
+
+    def is_confirmed(self):
+        return self.status == SubscriptionStatus.CONFIRMED
+    
+    def confirm(self):
+        self.paid_at = timezone.now()
+        self.status = SubscriptionStatus.CONFIRMED
+        self.save()
+
+    def cancel(self):
+        self.status = SubscriptionStatus.CANCELED
+        self.save()
 
     class Meta:
         verbose_name = "Inscrição"
@@ -64,3 +84,6 @@ class CompetitionSubscription(models.Model):
 
     def __str__(self):
         return f"{self.team} - {self.competition}"
+    
+    def get_absolute_url(self):
+        return reverse("competitions:dashboard")

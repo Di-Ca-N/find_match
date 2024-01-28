@@ -4,7 +4,7 @@ from . import views
 
 app_name = "competitions"
 urlpatterns = [
-    path("<int:pk>/sign/", views.addTeamToCompetitionView.as_view(), name="competition_sign"),
+    path("<int:pk>/subscribe/", views.addTeamToCompetitionView.as_view(), name="competition_subscribe"),
     path("", views.CompetitionListView.as_view(), name="list_competition"),
     path("<int:pk>/", views.CompetitionDetailView.as_view(), name="detail_competition"),
     path(
@@ -13,4 +13,5 @@ urlpatterns = [
         name="update_competition",
     ),
     path("create/", views.CompetitionCreateView.as_view(), name="create_competition"),
+    path("dashboard/", views.CompetitionDashboardView, name="dashboard"),
 ]

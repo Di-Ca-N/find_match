@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>{{competition.title}}</h1>
+    <div class="row">
+        <h1>Você concluiu a sua inscrição em {{ competition.title }}</h1>
+    </div>
+{% endblock content %}
