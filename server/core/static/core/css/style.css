@@ -106,6 +106,38 @@ li {
   color: var(--white);
 }
 
+.overlay {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: -10px;
+  bottom: 0;
+  display: flex;
+  justify-content: right;
+  height: 30px;
+}
+.overlay a {
+  background-color: var(--white);
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--green);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.overlay a:hover {
+  background-color: var(--green);
+  color: var(--white) !important;
+  width: 40px;
+  height: 40px;
+  transition: 0.3s;
+}
+
 @media (min-width: 992px) {
   .home-banner {
     height: 470px;

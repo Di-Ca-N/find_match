@@ -1,6 +1,9 @@
 {% load static %}
 <div class="col-12 col-md-6 col-lg-4 mb-4">
     <div class="card h-lg-100 border-0 card-event">
+        {% if perms.competitions.change_competition %}
+        <div class="overlay"><a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="bi bi-pencil-fill"></i></a></div>
+        {% endif %}
         <img src="{{competition.image.url}}" alt="" class="card-img-top d-none d-md-block">
         <div class="card-body">
             <h5 class="card-title fs-24">{{competition.title}}</h5>

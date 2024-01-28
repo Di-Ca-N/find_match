@@ -3,6 +3,10 @@
 {% block content %}
     <h1>{{competition.title}}</h1>
     <div class="row">
-        <h1>Você concluiu a sua inscrição em {{ competition.title }}</h1>
+        {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+        {% else % }
+          <h1>Você concluiu a sua inscrição em {{ competition.title }}</h1>
+        {% endif %}
     </div>
 {% endblock content %}
