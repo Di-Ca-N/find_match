@@ -32,6 +32,11 @@ class Competition(models.Model):
     subscription_price = models.DecimalField(
         max_digits=6, decimal_places=2, verbose_name="Preço da inscrição", default=0
     )
+    avaliacao = models.IntegerField(
+        verbose_name="Avaliação",
+        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')],
+        default=1,  # Pode definir um valor padrão se desejar
+    )
 
     class Meta:
         verbose_name = "Competição"

@@ -29,6 +29,11 @@
                 <p><b>Endereço:</b> {{object.city}}/{{object.state}} - {{object.address}}</p>
             {% endif %}
             <p><b>Preço de Inscrição:</b> {% if competition.subscription_price > 0 %}R${{competition.subscription_price}}{% else %}Gratuito{% endif %}</p>
+            <p><b>Avaliação:</b>
+                {% if object.avaliacao >= 0 %}
+                    <p><b>"1"</b></p>
+                    <i class="fa-solid fa-star"></i>
+                {% endif %}
         </div>
       <div class="col-12">
         <p class="text-justify">{{object.description}}</p>
