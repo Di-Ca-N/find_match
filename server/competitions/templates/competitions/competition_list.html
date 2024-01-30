@@ -15,9 +15,40 @@
 {% endblock pre-content %}
 
 {% block content %}
+<<<<<<< HEAD
+=======
+
+  <form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+  <ul>
+    {% for competition in competitions %}
+      <li>{{ competition.name }} - {{ competition.datetime }} - {{ competition.city }} - {{ competition.state }}</li>
+    {% endfor %}
+  </ul>
+    {% if perms.competitions.add_competition %}
+    <div class="row pb-3">
+      <div>
+          <a href="{% url 'competitions:create_competition' %}" class="btn btn-find-match login">Criar competição</a>
+      </div>
+    </div>
+    {% endif %}
+
+>>>>>>> 96a951d (Criacao da classe competitionFilter)
     <div class="row">
         {% for competition in object_list %}
             {% include "competitions/competition_card.html" %}
         {% endfor %}
     </div>
 {% endblock content %}
+
+  <form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+  <ul>
+    {% for competition in competitions %}
+      <li>{{ competition.name }} - {{ competition.datetime }} - {{ competition.city }} - {{ competition.state }}</li>
+    {% endfor %}
+  </ul>
