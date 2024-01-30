@@ -42,10 +42,12 @@ def organizer_request_view(request):
     if request.method == 'POST':
         form = OrganizerRequestForm(request.POST)
         if form.is_valid():
-            # Process the form data (e.g., send an email to administrators)
-            reason = form.cleaned_data['reason']
-            
-            return redirect('home')
+            # Save the organizer request to the database
+            organizer_request = form.save(commit=False)
+            organizer_request.user = request.user  # Link the request to the user
+            organizer_request.save()
+
+            return redirect("home")
     else:
         form = OrganizerRequestForm()
 

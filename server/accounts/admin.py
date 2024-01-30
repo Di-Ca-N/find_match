@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
-from .models import User
+from .models import User, OrganizerRequest
 
 
 class CustomUserAdmin(UserAdmin):
@@ -38,3 +38,4 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(OrganizerRequest)

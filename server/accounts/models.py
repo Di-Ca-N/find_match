@@ -16,3 +16,9 @@ class User(AbstractUser):
     def __str__(self):
         return f"User: {self.username}"
     
+class OrganizerRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reason = models.TextField()
+
+    def __str__(self):
+        return f"Pedido para virar organizador de {self.user.username}"

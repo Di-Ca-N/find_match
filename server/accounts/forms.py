@@ -1,6 +1,7 @@
+from django.core.validators import MaxLengthValidator
 from django import forms
 
-from .models import User
+from .models import User, OrganizerRequest
 
 
 class UserCreationForm(forms.ModelForm):
@@ -42,9 +43,14 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
-class OrganizerRequestForm(forms.Form):
+class OrganizerRequestForm(forms.ModelForm):
     reason = forms.CharField(
         max_length=1000,
         label='Conte-nos por que você deve ser um organizador.',
-        widget=forms.Textarea(attrs={'rows': 5})
+        widget=forms.Textarea(attrs={'rows': 5}),
+        validators=[MaxLengthValidator(limit_value=1000, message='Exceeds maximum length of 1000 characters.')]
     )
+
+    class Meta:
+        model = OrganizerRequest
+        fields = ['reason']
