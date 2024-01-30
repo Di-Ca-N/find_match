@@ -41,3 +41,10 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class OrganizerRequestForm(forms.Form):
+    reason = forms.CharField(
+        max_length=1000,
+        label='Conte-nos por que você deve ser um organizador.',
+        widget=forms.Textarea(attrs={'rows': 5})
+    )

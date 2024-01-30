@@ -5,9 +5,11 @@ from django.views.generic import CreateView
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect
 
 from .models import User
 from .forms import UserCreationForm
+from .forms import OrganizerRequestForm
 
 
 class CreateUserView(CreateView):
@@ -35,3 +37,16 @@ class CreateUserView(CreateView):
 
     def get_success_url(self) -> str:
         return reverse("home")
+
+def organizer_request_view(request):
+    if request.method == 'POST':
+        form = OrganizerRequestForm(request.POST)
+        if form.is_valid():
+            # Process the form data (e.g., send an email to administrators)
+            reason = form.cleaned_data['reason']
+            
+            return redirect('home')
+    else:
+        form = OrganizerRequestForm()
+
+    return render(request, 'organizer_requests/organizer_request_form.html', {'form': form})
