@@ -6,6 +6,16 @@ from django.utils import timezone
 from accounts.models import User
 from sports.models import Modality
 
+class CompetitionManager(models.Manager):
+    def finalized(self):
+        return self.filter(datetime_end__lt=timezone.now())
+    
+    def active(self):
+        return self.filter(datetime__lt=timezone.now(), datetime_end__gt=timezone.now())
+    
+    def upcoming(self):
+        return self.filter(datetime__gt=timezone.now())
+
 
 class Competition(models.Model):
     organizer = models.ForeignKey(
@@ -35,6 +45,9 @@ class Competition(models.Model):
         max_digits=6, decimal_places=2, verbose_name="Preço da inscrição", default=0
     )
     raters = models.ManyToManyField(User, through="CompetitionRate", related_name="+")
+
+
+    objects = CompetitionManager()
 
     class Meta:
         verbose_name = "Competição"

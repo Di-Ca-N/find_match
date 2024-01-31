@@ -15,6 +15,7 @@ class CompetitionForm(forms.ModelForm):
             "modality",
             "description",
             "datetime",
+            "datetime_end",
             "city",
             "state",
             "address",
@@ -25,9 +26,10 @@ class CompetitionForm(forms.ModelForm):
             "organizer",
         ]
         widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
+            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "datetime_end": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
             "subscription_until": forms.widgets.DateTimeInput(
-                attrs={"type": "datetime-local"}
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
             ),
         }
 
