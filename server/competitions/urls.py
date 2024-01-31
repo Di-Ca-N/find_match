@@ -12,4 +12,9 @@ urlpatterns = [
         name="update_competition",
     ),
     path("create/", views.CompetitionCreateView.as_view(), name="create_competition"),
+    path(
+        "<int:competition_id>/rate/",
+        views.RateCompetitionView.as_view(),
+        name="rate_competition",
+    ),
 ]
