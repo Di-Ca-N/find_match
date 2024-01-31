@@ -17,4 +17,5 @@ urlpatterns = [
         views.RateCompetitionView.as_view(),
         name="rate_competition",
     ),
+    path("my/", views.MyCompetitionsView.as_view(), name="my_competitions"),
 ]

@@ -1,11 +1,11 @@
 from typing import Any
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, TemplateView
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UserPassesTestMixin,
 )
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 
 from .models import Competition, CompetitionRate
 from .forms import CompetitionForm, CompetitionRateForm
@@ -51,9 +51,6 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
         return authorized and obj.can_edit(self.request.user)
 
 
-# Create your views here.
-
-
 class RateCompetitionView(UserPassesTestMixin, CreateView):
     model = CompetitionRate
     template_name = "competitions/rate_competition.html"
@@ -75,4 +72,15 @@ class RateCompetitionView(UserPassesTestMixin, CreateView):
         context["competition"] = Competition.objects.get(
             pk=self.kwargs["competition_id"]
         )
+        return context
+
+
+class MyCompetitionsView(LoginRequiredMixin, TemplateView):
+    template_name = "competitions/my_competitions.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        organized_competitions = Competition.objects.filter(organizer=self.request.user)
+        
+        context["organized_competitions"] = organized_competitions
         return context
