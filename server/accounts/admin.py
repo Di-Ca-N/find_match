@@ -36,6 +36,29 @@ class CustomUserAdmin(UserAdmin):
     )
     list_display = ["username", "email", "first_name", "last_name", "is_staff"]
 
+class OrganizerRequestAdmin(admin.ModelAdmin):
+    list_display = ['user', 'status']
+    actions = ['accept_organizer_request', 'decline_organizer_request']
+
+    def accept_organizer_request(self, request, queryset):
+        for request in queryset:
+            user = request.user
+            user.is_organizer = True
+            user.save()
+
+            # Update the status of the OrganizerRequest
+            request.status = 'Aceito'
+            request.save()
+
+    accept_organizer_request.short_description = "Aceitar os pedidos selecionados"
+
+    def decline_organizer_request(self, request, queryset):
+        for request in queryset:
+            request.status = 'Recusado'
+            request.save()
+
+    decline_organizer_request.short_description = "Recusar os pedidos selecionados"
 
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(OrganizerRequest)
+admin.site.register(OrganizerRequest, OrganizerRequestAdmin)
+

@@ -20,5 +20,13 @@ class OrganizerRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reason = models.TextField()
 
+    STATUS_CHOICES = [
+        ('pending', 'Pendente'),
+        ('accepted', 'Aceito'),
+        ('declined', 'Recusado'),
+    ]
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
     def __str__(self):
         return f"Pedido para virar organizador de {self.user.username}"
