@@ -1,10 +1,14 @@
 from typing import Any
-from django.shortcuts import render
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin,
+)
+from django.urls import reverse_lazy, reverse
 
-from .models import Competition
-from .forms import CompetitionForm
+from .models import Competition, CompetitionRate
+from .forms import CompetitionForm, CompetitionRateForm
 
 
 class CompetitionListView(ListView):
@@ -28,6 +32,13 @@ class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
 class CompetitionDetailView(DetailView):
     model = Competition
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context[
+            "user_can_evaluate_competition"
+        ] = self.get_object().can_evaluate_competition(self.request.user)
+        return context
+
 
 class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Competition
@@ -41,3 +52,27 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
 
 
 # Create your views here.
+
+
+class RateCompetitionView(UserPassesTestMixin, CreateView):
+    model = CompetitionRate
+    template_name = "competitions/rate_competition.html"
+    form_class = CompetitionRateForm
+    success_url = reverse_lazy("home")
+
+    def test_func(self):
+        competition = Competition.objects.get(pk=self.kwargs["competition_id"])
+        return competition.can_evaluate_competition(self.request.user)
+
+    def get_initial(self) -> dict[str, Any]:
+        return {
+            "user": self.request.user,
+            "competition": Competition.objects.get(pk=self.kwargs["competition_id"]),
+        }
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["competition"] = Competition.objects.get(
+            pk=self.kwargs["competition_id"]
+        )
+        return context
