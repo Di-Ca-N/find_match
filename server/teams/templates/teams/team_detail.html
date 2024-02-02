@@ -22,6 +22,16 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ member.get_full_name }}</td>
                         <td>{{ member.cpf }}</td>
+                        <td>
+                            {% if member != team.leader %}
+                            <form action="{% url 'teams:team_remove_member' team_id=team.id user_id=member.id%}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link text-danger p-0">
+                                    <i class="material-icons small">delete</i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

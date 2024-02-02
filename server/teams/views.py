@@ -1,8 +1,11 @@
 from typing import Any
+from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpRequest, HttpResponse
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.urls import reverse
+from django.contrib import messages
 
 from .forms import TeamForm, MemberForm
 from .models import Team, TeamMember
@@ -69,3 +72,25 @@ class ListTeams(LoginRequiredMixin, ListView):
 
 class DetailTeam(DetailView):
     model = Team
+
+
+class DeleteTeamMemberView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = TeamMember
+    
+    def test_func(self):
+        team = self.get_object().team
+        return self.request.user == team.leader
+    
+    def form_valid(self, form):
+        messages.success(self.request, f"Membro removido", "danger")
+        return super().form_valid(form)
+    
+
+    def get_object(self, queryset = None) -> TeamMember:
+        if queryset is None:
+            queryset = self.get_queryset()
+        
+        return queryset.get(team=self.kwargs["team_id"], user=self.kwargs["user_id"])
+
+    def get_success_url(self) -> str:
+        return reverse("teams:detail_team", kwargs={"pk": self.kwargs["team_id"]})
