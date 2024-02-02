@@ -10,6 +10,7 @@ from teams.models import Team
 
 from django.db.models import Q
 
+
 class Competition(models.Model):
     organizer = models.ForeignKey(
         User, on_delete=models.PROTECT, verbose_name="Organizador"
@@ -36,6 +37,11 @@ class Competition(models.Model):
     subscription_price = models.DecimalField(
         max_digits=6, decimal_places=2, verbose_name="Preço da inscrição", default=0
     )
+    subscribed_teams = models.ManyToManyField(
+        Team,
+        through="competitions.CompetitionSubscription",
+        related_name="competitions",
+    )
 
     class Meta:
         verbose_name = "Competição"
@@ -50,27 +56,29 @@ class Competition(models.Model):
     def can_edit(self, user):
         return user == self.organizer
 
-class SubscriptionStatus(models.TextChoices):   
+
+class SubscriptionStatus(models.TextChoices):
     PENDING = "PENDING", "Pendente"
     CONFIRMED = "CONFIRMED", "Confirmada"
     CANCELED = "CANCELED", "Cancelada"
+
 
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
         Competition, on_delete=models.PROTECT, verbose_name="Competição"
     )
-    team = models.ForeignKey(
-        Team, on_delete=models.PROTECT, verbose_name="Time"
-    )
+    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     status = models.CharField(
-        max_length=10, choices=SubscriptionStatus.choices, default=SubscriptionStatus.PENDING
+        max_length=10,
+        choices=SubscriptionStatus.choices,
+        default=SubscriptionStatus.PENDING,
     )
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
 
     def is_confirmed(self):
         return self.status == SubscriptionStatus.CONFIRMED
-    
+
     def confirm(self):
         self.paid_at = timezone.now()
         self.status = SubscriptionStatus.CONFIRMED
@@ -86,23 +94,33 @@ class CompetitionSubscription(models.Model):
 
     def __str__(self):
         return f"{self.team} - {self.competition}"
-    
+
     def clean(self):
-        team_is_in_competition = CompetitionSubscription.objects.filter(team=self.team, competition=self.competition).exists()
-        team_is_busy = CompetitionSubscription.objects.filter(team=self.team, competition__datetime=self.competition.datetime).exists()
+        team_is_in_competition = CompetitionSubscription.objects.filter(
+            team=self.team, competition=self.competition
+        ).exists()
+        team_is_busy = CompetitionSubscription.objects.filter(
+            team=self.team, competition__datetime=self.competition.datetime
+        ).exists()
 
         if team_is_in_competition:
             raise ValidationError("Este time já está inscrito nesta competição.")
         if team_is_busy:
-            raise ValidationError("Este time já está inscrito em outra competição no mesmo horário.")
+            raise ValidationError(
+                "Este time já está inscrito em outra competição no mesmo horário."
+            )
         for member in self.team.members.all():
-            if CompetitionSubscription.objects.filter(~Q(team=self.team), competition=self.competition, team__members=member).exists():
-                raise ValidationError(f"O membro {member} já está inscrito em outra competição no mesmo horário.")
-    
+            if CompetitionSubscription.objects.filter(
+                ~Q(team=self.team), competition=self.competition, team__members=member
+            ).exists():
+                raise ValidationError(
+                    f"O membro {member} já está inscrito em outra competição no mesmo horário."
+                )
+
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
-    
+
     # def get_absolute_url(self):
     #     competition_pk = Competition.objects.get("pk")
     #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})

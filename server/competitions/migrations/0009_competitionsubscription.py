@@ -5,26 +5,53 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('competitions', '0008_alter_competition_subscription_until'),
-        ('teams', '0003_alter_team_leader_alter_team_members_and_more'),
+        ("competitions", "0008_alter_competition_subscription_until"),
+        ("teams", "0003_alter_team_leader_alter_team_members_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CompetitionSubscription',
+            name="CompetitionSubscription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Criado em')),
-                ('paid', models.BooleanField(default=False, verbose_name='Pago')),
-                ('paid_at', models.DateTimeField(blank=True, null=True, verbose_name='Pago em')),
-                ('competition', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='competitions.competition', verbose_name='Competição')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='teams.team', verbose_name='Time')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Criado em"),
+                ),
+                ("paid", models.BooleanField(default=False, verbose_name="Pago")),
+                (
+                    "paid_at",
+                    models.DateTimeField(blank=True, null=True, verbose_name="Pago em"),
+                ),
+                (
+                    "competition",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="competitions.competition",
+                        verbose_name="Competição",
+                    ),
+                ),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="teams.team",
+                        verbose_name="Time",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Inscrição',
-                'verbose_name_plural': 'Inscrições',
+                "verbose_name": "Inscrição",
+                "verbose_name_plural": "Inscrições",
             },
         ),
     ]

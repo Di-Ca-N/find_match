@@ -4,19 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('competitions', '0009_competitionsubscription'),
+        ("competitions", "0009_competitionsubscription"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='competitionsubscription',
-            name='paid',
+            model_name="competitionsubscription",
+            name="paid",
         ),
         migrations.AddField(
-            model_name='competitionsubscription',
-            name='status',
-            field=models.CharField(choices=[('PENDING', 'Pendente'), ('CONFIRMED', 'Confirmada'), ('CANCELED', 'Cancelada')], default='PENDING', max_length=10),
+            model_name="competitionsubscription",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("PENDING", "Pendente"),
+                    ("CONFIRMED", "Confirmada"),
+                    ("CANCELED", "Cancelada"),
+                ],
+                default="PENDING",
+                max_length=10,
+            ),
         ),
     ]
