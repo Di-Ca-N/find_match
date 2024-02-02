@@ -12,7 +12,7 @@
                     <div class="d-grid content-date">
                         <span class="date-text">{{competition.datetime|date:"M"}}</span>
                         <span class="d-block date-num">{{competition.datetime|date:"j"}}</span>
-                        <span class="d-block date-week">| Domingo</span>
+                        <span class="d-block date-week">| {{competition.datetime|date:"l"}}</span>
                     </div>
                 </div>
                 <a href="{% url 'competitions:detail_competition' pk=competition.id %}" class="btn btn-find-match align-items-center d-flex">Ver Evento</a>

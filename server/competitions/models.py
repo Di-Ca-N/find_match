@@ -10,6 +10,16 @@ from teams.models import Team
 
 from django.db.models import Q
 
+class CompetitionManager(models.Manager):
+    def finalized(self):
+        return self.filter(datetime_end__lt=timezone.now())
+    
+    def active(self):
+        return self.filter(datetime__lt=timezone.now(), datetime_end__gt=timezone.now())
+    
+    def upcoming(self):
+        return self.filter(datetime__gt=timezone.now())
+
 
 class Competition(models.Model):
     organizer = models.ForeignKey(
@@ -21,6 +31,7 @@ class Competition(models.Model):
     title = models.CharField(max_length=50, verbose_name="Título")
     description = models.TextField(verbose_name="Descrição")
     datetime = models.DateTimeField(verbose_name="Data e Horário")
+    datetime_end = models.DateTimeField(verbose_name="Data e Horário de término")
     subscription_until = models.DateTimeField(verbose_name="Prazo de inscrição")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     city = models.CharField(max_length=80, verbose_name="Cidade", blank=True)
@@ -42,6 +53,11 @@ class Competition(models.Model):
         through="competitions.CompetitionSubscription",
         related_name="competitions",
     )
+
+    raters = models.ManyToManyField(User, through="CompetitionRate", related_name="+")
+
+    objects = CompetitionManager()
+
 
     class Meta:
         verbose_name = "Competição"
@@ -124,3 +140,37 @@ class CompetitionSubscription(models.Model):
     # def get_absolute_url(self):
     #     competition_pk = Competition.objects.get("pk")
     #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
+
+    def competition_ended(self):
+        return self.datetime_end < timezone.now()
+
+    def can_evaluate_competition(self, user):
+        user_already_evaluated = self.raters.filter(pk=user.id).exists()
+
+        # ToDo: Adicionar restrição de usuário estar cadastrado na competição
+        return not user_already_evaluated and self.competition_ended()
+
+
+class RatingChoices(models.IntegerChoices):
+    EXCELLENT = (5, "Excelente")
+    VERY_GOOD = (4, "Ótimo")
+    GOOD = (3, "Bom")
+    FAIR = (2, "Regular")
+    POOR = (1, "Ruim")
+
+
+class CompetitionRate(models.Model):
+    competition = models.ForeignKey(
+        Competition, on_delete=models.CASCADE, related_name="ratings"
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    rating = models.PositiveIntegerField(choices=RatingChoices)
+    observations = models.TextField()
+
+    class Meta:
+        verbose_name = "Avaliação de Competição"
+        verbose_name_plural = "Avaliações de Competições"
+
+    def __str__(self):
+        return f"Avaliação de {self.competition} por {self.user}"
+

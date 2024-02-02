@@ -30,7 +30,7 @@ class UserCreationForm(forms.ModelForm):
 
         try:
             user = User.objects.get(cpf=cpf)
-        except:
+        except User.DoesNotExist:
             user = User(cpf=cpf)
         user.username = self.cleaned_data.get("username")
         user.email = self.cleaned_data.get("email")

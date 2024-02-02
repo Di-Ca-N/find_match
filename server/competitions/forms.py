@@ -1,6 +1,6 @@
 from django import forms
 from accounts.models import User
-from .models import Competition, CompetitionSubscription, Team
+from .models import Competition, CompetitionSubscription, Team, CompetitionRate
 
 
 class CompetitionForm(forms.ModelForm):
@@ -15,6 +15,7 @@ class CompetitionForm(forms.ModelForm):
             "modality",
             "description",
             "datetime",
+            "datetime_end",
             "city",
             "state",
             "address",
@@ -25,9 +26,13 @@ class CompetitionForm(forms.ModelForm):
             "organizer",
         ]
         widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}),
-            "subscription_until": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"})
+            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "datetime_end": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "subscription_until": forms.widgets.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
         }
+
 
 class CompetitionSubscribeForm(forms.ModelForm):
     competition = forms.ModelChoiceField(
@@ -45,4 +50,17 @@ class CompetitionSubscribeForm(forms.ModelForm):
         super(CompetitionSubscribeForm, self).__init__(*args, **kwargs)
         if self.user is not None:
             self.fields["team"].queryset = Team.objects.filter(leader=self.user)
-       
+
+
+class CompetitionRateForm(forms.ModelForm):
+    user = forms.ModelChoiceField(
+        User.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
+    )
+    competition = forms.ModelChoiceField(
+        Competition.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
+    )
+
+    class Meta:
+        model = CompetitionRate
+        fields = ["competition", "user", "rating", "observations"]
+
