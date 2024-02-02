@@ -12,5 +12,9 @@ urlpatterns = [
     ),
     path("<int:pk>/", views.DetailTeam.as_view(), name="detail_team"),
     path("", views.ListTeams.as_view(), name="list_teams"),
-    path("<int:team_id>/remove_member/<int:user_id>", views.DeleteTeamMemberView.as_view(), name="team_remove_member"),
+    path(
+        "<int:team_id>/remove_member/<int:user_id>",
+        views.DeleteTeamMemberView.as_view(),
+        name="team_remove_member",
+    ),
 ]
