@@ -72,6 +72,15 @@ class Competition(models.Model):
     def can_edit(self, user):
         return user == self.organizer
 
+    def competition_ended(self):
+        return self.datetime_end < timezone.now()
+
+    def can_evaluate_competition(self, user):
+        user_already_evaluated = self.raters.filter(pk=user.id).exists()
+
+        # ToDo: Adicionar restrição de usuário estar cadastrado na competição
+        return not user_already_evaluated and self.competition_ended()
+
 
 class SubscriptionStatus(models.TextChoices):
     PENDING = "PENDING", "Pendente"
@@ -140,15 +149,6 @@ class CompetitionSubscription(models.Model):
     # def get_absolute_url(self):
     #     competition_pk = Competition.objects.get("pk")
     #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
-
-    def competition_ended(self):
-        return self.datetime_end < timezone.now()
-
-    def can_evaluate_competition(self, user):
-        user_already_evaluated = self.raters.filter(pk=user.id).exists()
-
-        # ToDo: Adicionar restrição de usuário estar cadastrado na competição
-        return not user_already_evaluated and self.competition_ended()
 
 
 class RatingChoices(models.IntegerChoices):
