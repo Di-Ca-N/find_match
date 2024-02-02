@@ -1,6 +1,6 @@
 from django import forms
 from accounts.models import User
-from .models import Competition, CompetitionSubscription
+from .models import Competition, CompetitionSubscription, Team
 
 
 class CompetitionForm(forms.ModelForm):
@@ -39,4 +39,10 @@ class CompetitionSubscribeForm(forms.ModelForm):
             "team",
             "competition",
         ]
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user",None)
+        super(CompetitionSubscribeForm, self).__init__(*args, **kwargs)
+        if self.user is not None:
+            self.fields["team"].queryset = Team.objects.filter(leader=self.user)
        

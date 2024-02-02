@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from localflavor.br.models import BRStateField
 from django.urls import reverse
 from django.utils import timezone
@@ -7,6 +8,7 @@ from accounts.models import User
 from sports.models import Modality
 from teams.models import Team
 
+from django.db.models import Q
 
 class Competition(models.Model):
     organizer = models.ForeignKey(
@@ -84,6 +86,22 @@ class CompetitionSubscription(models.Model):
 
     def __str__(self):
         return f"{self.team} - {self.competition}"
+    
+    def clean(self):
+        team_is_in_competition = CompetitionSubscription.objects.filter(team=self.team, competition=self.competition).exists()
+        team_is_busy = CompetitionSubscription.objects.filter(team=self.team, competition__datetime=self.competition.datetime).exists()
+
+        if team_is_in_competition:
+            raise ValidationError("Este time já está inscrito nesta competição.")
+        if team_is_busy:
+            raise ValidationError("Este time já está inscrito em outra competição no mesmo horário.")
+        for member in self.team.members.all():
+            if CompetitionSubscription.objects.filter(~Q(team=self.team), competition=self.competition, team__members=member).exists():
+                raise ValidationError(f"O membro {member} já está inscrito em outra competição no mesmo horário.")
+    
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
     
     # def get_absolute_url(self):
     #     competition_pk = Competition.objects.get("pk")
