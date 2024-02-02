@@ -10,13 +10,14 @@ from teams.models import Team
 
 from django.db.models import Q
 
+
 class CompetitionManager(models.Manager):
     def finalized(self):
         return self.filter(datetime_end__lt=timezone.now())
-    
+
     def active(self):
         return self.filter(datetime__lt=timezone.now(), datetime_end__gt=timezone.now())
-    
+
     def upcoming(self):
         return self.filter(datetime__gt=timezone.now())
 
@@ -57,7 +58,6 @@ class Competition(models.Model):
     raters = models.ManyToManyField(User, through="CompetitionRate", related_name="+")
 
     objects = CompetitionManager()
-
 
     class Meta:
         verbose_name = "Competição"
@@ -173,4 +173,3 @@ class CompetitionRate(models.Model):
 
     def __str__(self):
         return f"Avaliação de {self.competition} por {self.user}"
-

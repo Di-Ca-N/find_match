@@ -26,8 +26,12 @@ class CompetitionForm(forms.ModelForm):
             "organizer",
         ]
         widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
-            "datetime_end": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "datetime": forms.widgets.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
+            "datetime_end": forms.widgets.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
             "subscription_until": forms.widgets.DateTimeInput(
                 attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
             ),
@@ -38,6 +42,7 @@ class CompetitionSubscribeForm(forms.ModelForm):
     competition = forms.ModelChoiceField(
         Competition.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
     )
+
     class Meta:
         model = CompetitionSubscription
         fields = [
@@ -46,7 +51,7 @@ class CompetitionSubscribeForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop("user",None)
+        self.user = kwargs.pop("user", None)
         super(CompetitionSubscribeForm, self).__init__(*args, **kwargs)
         if self.user is not None:
             self.fields["team"].queryset = Team.objects.filter(leader=self.user)
@@ -63,4 +68,3 @@ class CompetitionRateForm(forms.ModelForm):
     class Meta:
         model = CompetitionRate
         fields = ["competition", "user", "rating", "observations"]
-

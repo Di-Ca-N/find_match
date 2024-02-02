@@ -1,27 +1,25 @@
 from typing import Any
-<<<<<<< HEAD
 from django.forms import ValidationError
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponseRedirect
-from django.db import transaction
-from .models import Competition, CompetitionSubscription
-from .forms import CompetitionForm, CompetitionSubscribeForm
-from django.core.exceptions import PermissionDenied
-=======
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, TemplateView
+from django.views.generic import (
+    CreateView,
+    ListView,
+    DetailView,
+    UpdateView,
+    TemplateView,
+)
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UserPassesTestMixin,
 )
+from django.http import HttpResponseRedirect
+from django.db import transaction
 from django.urls import reverse_lazy
-
-from .models import Competition, CompetitionRate
-from .forms import CompetitionForm, CompetitionRateForm
->>>>>>> main
+from .models import Competition, CompetitionSubscription, CompetitionRate
+from .forms import CompetitionForm, CompetitionSubscribeForm, CompetitionRateForm
+from django.core.exceptions import PermissionDenied
 
 
 class CompetitionListView(ListView):
@@ -64,7 +62,6 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
         return authorized and obj.can_edit(self.request.user)
 
 
-<<<<<<< HEAD
 # Create your views here.
 class addTeamToCompetitionView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = CompetitionSubscription
@@ -91,16 +88,18 @@ class addTeamToCompetitionView(CreateView, LoginRequiredMixin, PermissionRequire
     def get_success_url(self) -> str:
         competition = Competition.objects.get(pk=self.kwargs["pk"])
         return reverse("competitions:dashboard", kwargs={"pk": competition.pk})
-    
+
     def form_valid(self, form):
         team = form.instance.team
-        
+
         if team.leader != self.request.user:
             self.request.session["error_message"] = "Você não é o líder do time"
             raise PermissionDenied("Você não tem permissão para inscrever este time.")
         try:
             with transaction.atomic():
-                competition = Competition.objects.select_for_update().get(pk=self.kwargs["pk"])
+                competition = Competition.objects.select_for_update().get(
+                    pk=self.kwargs["pk"]
+                )
                 response = super(addTeamToCompetitionView, self).form_valid(form)
                 if competition.max_slots > 0:
                     competition.max_slots -= 1
@@ -108,23 +107,33 @@ class addTeamToCompetitionView(CreateView, LoginRequiredMixin, PermissionRequire
                     return response
                 else:
                     # error message
-                    self.request.session["error_message"] = "Não há mais vagas disponíveis"
-                    return HttpResponseRedirect(reverse("competitions:dashboard", kwargs={"pk": competition.pk}))
+                    self.request.session[
+                        "error_message"
+                    ] = "Não há mais vagas disponíveis"
+                    return HttpResponseRedirect(
+                        reverse("competitions:dashboard", kwargs={"pk": competition.pk})
+                    )
         except ValidationError as e:
             # Se uma ValidationError for capturada, adiciona os erros ao formulário
             for field, errors in e.message_dict.items():
                 for error in errors:
                     form.add_error(field, error)
             return self.form_invalid(form)
-            
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
         return kwargs
 
+
 def CompetitionDashboardView(request, pk):
-    return render(request, "competitions/dashboard.html", {"competition": Competition.objects.get(pk=pk)})
-=======
+    return render(
+        request,
+        "competitions/dashboard.html",
+        {"competition": Competition.objects.get(pk=pk)},
+    )
+
+
 class RateCompetitionView(UserPassesTestMixin, CreateView):
     model = CompetitionRate
     template_name = "competitions/rate_competition.html"
@@ -155,7 +164,6 @@ class MyCompetitionsView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         organized_competitions = Competition.objects.filter(organizer=self.request.user)
-        
+
         context["organized_competitions"] = organized_competitions
         return context
->>>>>>> main
