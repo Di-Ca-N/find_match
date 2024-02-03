@@ -118,7 +118,7 @@ class CompetitionSubscription(models.Model):
         verbose_name_plural = "Inscrições"
 
     def __str__(self):
-        return f"{self.team} - {self.competition}"
+        return f"{self.competition}"
 
     def clean(self):
         team_is_in_competition = CompetitionSubscription.objects.filter(
@@ -127,6 +127,7 @@ class CompetitionSubscription(models.Model):
         team_is_busy = CompetitionSubscription.objects.filter(
             team=self.team, competition__datetime=self.competition.datetime
         ).exists()
+        team_is_complete = self.team.is_complete()
 
         if team_is_in_competition:
             raise ValidationError("Este time já está inscrito nesta competição.")
@@ -134,13 +135,16 @@ class CompetitionSubscription(models.Model):
             raise ValidationError(
                 "Este time já está inscrito em outra competição no mesmo horário."
             )
-        for member in self.team.members.all():
+        for member in self.team.get_members():
             if CompetitionSubscription.objects.filter(
                 ~Q(team=self.team), competition=self.competition, team__members=member
             ).exists():
                 raise ValidationError(
-                    f"O membro {member} já está inscrito em outra competição no mesmo horário."
+                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
                 )
+        if not team_is_complete:
+            raise ValidationError("O time não está completo.")
+        
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -150,6 +154,19 @@ class CompetitionSubscription(models.Model):
     #     competition_pk = Competition.objects.get("pk")
     #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
 
+class CompetitionResults(models.Model):
+    competition = models.OneToOneField(
+        Competition, on_delete=models.CASCADE, related_name="results"
+    )
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_results")
+    place = models.PositiveIntegerField(verbose_name="Colocação")
+
+    class Meta:
+        verbose_name = "Resultado de Competição"
+        verbose_name_plural = "Resultados de Competições"
+
+    def __str__(self):
+        return f"Resultado de {self.competition}"
 
 class RatingChoices(models.IntegerChoices):
     EXCELLENT = (5, "Excelente")

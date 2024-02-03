@@ -1,9 +1,10 @@
 from django.contrib import admin
 
-from .models import Competition, CompetitionRate
+from .models import Competition, CompetitionRate, CompetitionSubscription
 
 
 admin.site.register(Competition)
+admin.site.register(CompetitionSubscription)
 
 
 @admin.register(CompetitionRate)

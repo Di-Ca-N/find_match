@@ -24,4 +24,6 @@ urlpatterns = [
         name="rate_competition",
     ),
     path("my/", views.MyCompetitionsView.as_view(), name="my_competitions"),
+    path("my/<int:pk>", views.cancelSubscriptionView.as_view(), name="remove_subscription"),
+    path('competition/<int:pk>/assign-winners/', views.CompetitionWinnersView.as_view(), name='assign_winners'),
 ]

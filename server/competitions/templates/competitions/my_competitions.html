@@ -33,6 +33,7 @@
                         <td>
                             <a href="{{competition.get_absolute_url}}"><i class="material-icons">info</i></a>
                             <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a>
+                            <a href="{% url 'competitions:assign_winners' pk=competition.id %}"><i class="material-icons">emoji_events</i></a>
                         </td>
                     </tr>
                 {% empty %}
@@ -81,6 +82,46 @@
                 {% empty %}
                     <tr>
                         <td colspan="100">Você ainda não participou de eventos</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <h2>Minhas Inscrições</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Competição</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Data de inscrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subscription in my_subscriptions %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription}}</a></td>
+                        <td>{{subscription.team}}</td>
+                        <td>{{subscription.status}}</td>
+                        <td>{{subscription.created_at}}</td>
+                        <td>
+                            <form action="{% url 'competitions:remove_subscription' pk=subscription.id%}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link text-danger p-0">
+                                    <i class="material-icons small">delete</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="100">Você ainda não se inscreveu em eventos</td>
                     </tr>
                 {% endfor %}
             </tbody>
