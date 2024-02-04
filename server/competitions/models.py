@@ -1,18 +1,23 @@
 from django.db import models
+from django.forms import ValidationError
 from localflavor.br.models import BRStateField
 from django.urls import reverse
 from django.utils import timezone
 
 from accounts.models import User
 from sports.models import Modality
+from teams.models import Team
+
+from django.db.models import Q
+
 
 class CompetitionManager(models.Manager):
     def finalized(self):
         return self.filter(datetime_end__lt=timezone.now())
-    
+
     def active(self):
         return self.filter(datetime__lt=timezone.now(), datetime_end__gt=timezone.now())
-    
+
     def upcoming(self):
         return self.filter(datetime__gt=timezone.now())
 
@@ -44,8 +49,13 @@ class Competition(models.Model):
     subscription_price = models.DecimalField(
         max_digits=6, decimal_places=2, verbose_name="Preço da inscrição", default=0
     )
-    raters = models.ManyToManyField(User, through="CompetitionRate", related_name="+")
+    subscribed_teams = models.ManyToManyField(
+        Team,
+        through="competitions.CompetitionSubscription",
+        related_name="competitions",
+    )
 
+    raters = models.ManyToManyField(User, through="CompetitionRate", related_name="+")
 
     objects = CompetitionManager()
 
@@ -71,6 +81,92 @@ class Competition(models.Model):
         # ToDo: Adicionar restrição de usuário estar cadastrado na competição
         return not user_already_evaluated and self.competition_ended()
 
+
+class SubscriptionStatus(models.TextChoices):
+    PENDING = "PENDING", "Pendente"
+    CONFIRMED = "CONFIRMED", "Confirmada"
+    CANCELED = "CANCELED", "Cancelada"
+
+
+class CompetitionSubscription(models.Model):
+    competition = models.ForeignKey(
+        Competition, on_delete=models.PROTECT, verbose_name="Competição"
+    )
+    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+    status = models.CharField(
+        max_length=10,
+        choices=SubscriptionStatus.choices,
+        default=SubscriptionStatus.PENDING,
+    )
+    paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
+
+    def is_confirmed(self):
+        return self.status == SubscriptionStatus.CONFIRMED
+
+    def confirm(self):
+        self.paid_at = timezone.now()
+        self.status = SubscriptionStatus.CONFIRMED
+        self.save()
+
+    def cancel(self):
+        self.status = SubscriptionStatus.CANCELED
+        self.save()
+
+    class Meta:
+        verbose_name = "Inscrição"
+        verbose_name_plural = "Inscrições"
+
+    def __str__(self):
+        return f"{self.competition}"
+
+    def clean(self):
+        team_is_in_competition = CompetitionSubscription.objects.filter(
+            team=self.team, competition=self.competition
+        ).exists()
+        team_is_busy = CompetitionSubscription.objects.filter(
+            team=self.team, competition__datetime=self.competition.datetime
+        ).exists()
+        team_is_complete = self.team.is_complete()
+
+        if team_is_in_competition:
+            raise ValidationError("Este time já está inscrito nesta competição.")
+        if team_is_busy:
+            raise ValidationError(
+                "Este time já está inscrito em outra competição no mesmo horário."
+            )
+        for member in self.team.get_members():
+            if CompetitionSubscription.objects.filter(
+                ~Q(team=self.team), competition=self.competition, team__members=member
+            ).exists():
+                raise ValidationError(
+                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
+                )
+        if not team_is_complete:
+            raise ValidationError("O time não está completo.")
+        
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
+    # def get_absolute_url(self):
+    #     competition_pk = Competition.objects.get("pk")
+    #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
+
+class CompetitionResults(models.Model):
+    competition = models.OneToOneField(
+        Competition, on_delete=models.CASCADE, related_name="results"
+    )
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_results")
+    place = models.PositiveIntegerField(verbose_name="Colocação")
+
+    class Meta:
+        verbose_name = "Resultado de Competição"
+        verbose_name_plural = "Resultados de Competições"
+
+    def __str__(self):
+        return f"Resultado de {self.competition}"
 
 class RatingChoices(models.IntegerChoices):
     EXCELLENT = (5, "Excelente")

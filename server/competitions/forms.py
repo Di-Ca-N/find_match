@@ -1,6 +1,6 @@
 from django import forms
 from accounts.models import User
-from .models import Competition, CompetitionRate
+from .models import Competition, CompetitionResults, CompetitionSubscription, Team, CompetitionRate
 
 
 class CompetitionForm(forms.ModelForm):
@@ -26,12 +26,37 @@ class CompetitionForm(forms.ModelForm):
             "organizer",
         ]
         widgets = {
-            "datetime": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
-            "datetime_end": forms.widgets.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "datetime": forms.widgets.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
+            "datetime_end": forms.widgets.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
             "subscription_until": forms.widgets.DateTimeInput(
                 attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
             ),
         }
+
+
+class CompetitionSubscribeForm(forms.ModelForm):
+    competition = forms.ModelChoiceField(
+        Competition.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
+    )
+
+    class Meta:
+        model = CompetitionSubscription
+        fields = [
+            "team",
+            "competition",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        modality = kwargs.pop("modality", None)
+        super(CompetitionSubscribeForm, self).__init__(*args, **kwargs)
+        
+        if self.user is not None :
+            self.fields["team"].queryset = Team.objects.filter(leader=self.user , modality=modality)
 
 
 class CompetitionRateForm(forms.ModelForm):
@@ -45,3 +70,17 @@ class CompetitionRateForm(forms.ModelForm):
     class Meta:
         model = CompetitionRate
         fields = ["competition", "user", "rating", "observations"]
+
+class CompetitionWinnersForm(forms.ModelForm):
+    first_place = forms.ModelChoiceField(queryset=Team.objects.none(), label="1st Place")
+    second_place = forms.ModelChoiceField(queryset=Team.objects.none(), label="2nd Place")
+    third_place = forms.ModelChoiceField(queryset=Team.objects.none(), label="3rd Place")
+    class Meta:
+        model = CompetitionResults
+        fields = []
+    def __init__(self, *args, **kwargs):
+        competition_id = kwargs.pop("competition_id", None)
+        super(CompetitionWinnersForm, self).__init__(*args, **kwargs)
+        self.fields["first_place"].queryset = Team.objects.filter(competitions__id=competition_id)
+        self.fields["second_place"].queryset = Team.objects.filter(competitions__id=competition_id)
+        self.fields["third_place"].queryset = Team.objects.filter(competitions__id=competition_id)

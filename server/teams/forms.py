@@ -31,7 +31,7 @@ class MemberForm(forms.ModelForm):
         cpf = cleaned_data.get("cpf")
         team: Team = cleaned_data.get("team")
 
-        if team.members.filter(user__cpf=cpf).exists() or team.leader.cpf == cpf:
+        if team.members.filter(cpf=cpf).exists() or team.leader.cpf == cpf:
             self.add_error("cpf", "Jogador informado já está no time")
 
     def save(self, commit=True):

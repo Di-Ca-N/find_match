@@ -1,6 +1,6 @@
 from django.utils import render, timezone
 from django.views.generic import ListView
-from .models import Competition
+from django.db.models import Competition
 
 
 def list_competitions(request):
