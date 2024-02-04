@@ -56,7 +56,6 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
     model = Competition
     form_class = CompetitionForm
     permission_required = "competitions.change_competition"
-    fields = []
 
     def has_permission(self) -> bool:
         authorized = super().has_permission()
