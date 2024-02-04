@@ -145,7 +145,7 @@ class CompetitionWinnersView(LoginRequiredMixin, PermissionRequiredMixin, UserPa
     model = Competition
     form_class = CompetitionWinnersForm
     permission_required = "competitions.change_competition"
-    success_url = reverse_lazy('my_competitions')
+    success_url = reverse_lazy('competitions:my_competitions')
     template_name = "competitions/assign_winners.html"
 
     def form_valid(self, form):
@@ -161,12 +161,11 @@ class CompetitionWinnersView(LoginRequiredMixin, PermissionRequiredMixin, UserPa
         }
 
         for field_name, placement in placements.items():
-            team_id = form.cleaned_data.get(field_name)
-            if team_id:
-                team = get_object_or_404(Team, pk=team_id)
+            team = form.cleaned_data.get(field_name)
+            if team is not None:
                 CompetitionResults.objects.update_or_create(
                     competition=competition,
-                    placement=placement,
+                    place=placement,
                     defaults={'team': team}
                 )
 

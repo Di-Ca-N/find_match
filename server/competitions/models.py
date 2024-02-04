@@ -155,7 +155,7 @@ class CompetitionSubscription(models.Model):
     #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
 
 class CompetitionResults(models.Model):
-    competition = models.OneToOneField(
+    competition = models.ForeignKey(
         Competition, on_delete=models.CASCADE, related_name="results"
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_results")
