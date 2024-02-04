@@ -18,22 +18,62 @@
 <<<<<<< HEAD
 =======
 
-  <form method="get">
+  <!-- <form method="get">
     {{ filter.form.as_p }}
     <button type="submit">Filter</button>
-  </form>
-  <ul>
+  </form> -->
+
+  {% load widget_tweaks %}
+  <div class="row mx-auto px-0">
+    <div class="col-12">
+      <h2 class="text-center fs-24">Pesquisar evento Específico</h2>
+      <form method="get" action="{% url 'competitions:list_competition' %}">
+        <div class="row">
+          <div class="col-3 mb-3">
+            <label for="data" class="form-label">Data</label>
+            <input type="data" class="form-control" id="data" placeholder="Ex: mês/ano">
+          </div>
+          <div class="col-3 mb-3">
+            <label for="city" class="form-label">Cidade</label>
+            {{ filter.form.city|add_class:"form-control" }}
+          </div>
+          <div class="col-3 mb-3">
+            <label for="modality" class="form-label">Modalidade</label>
+            {{ filter.form.modality|add_class:"form-control" }}
+          </div>
+          <div class="col-1 mb-3">
+            <label for="subscription_price" class="form-label">Preço</label>
+            {{ filter.form.state|add_class:"form-control" }}
+          </div>
+          <!-- <div class="col-2 mb-3">
+            <span class="input-group-text">Preço <</span>
+            {{ filter.form.subscription_price__lt|add_class:"form-control" }}
+            
+          </div>
+          <div class="col-2 mb-3">
+            <span class="input-group-text">Preço ></span>
+            <span>{{ filter.form.subscription_price__gt|add_class:"form-control" }}</span>
+          </div> -->
+          <div class="col-1 d-flex align-items-center">
+            <button type="submit" class="btn btn-find-match">Pesquisar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- <ul>
     {% for competition in competitions %}
       <li>{{ competition.name }} - {{ competition.datetime }} - {{ competition.city }} - {{ competition.state }}</li>
     {% endfor %}
-  </ul>
-    {% if perms.competitions.add_competition %}
+  </ul> -->
+    <!-- {% if perms.competitions.add_competition %}
     <div class="row pb-3">
       <div>
           <a href="{% url 'competitions:create_competition' %}" class="btn btn-find-match login">Criar competição</a>
       </div>
     </div>
-    {% endif %}
+    {% endif %} -->
 
 >>>>>>> 96a951d (Criacao da classe competitionFilter)
     <div class="row">
