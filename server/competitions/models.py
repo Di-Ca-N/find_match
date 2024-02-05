@@ -150,7 +150,7 @@ class SubscriptionQuerySet(models.QuerySet):
 
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
-        Competition, on_delete=models.PROTECT, verbose_name="Competição", related_name="competition"
+        Competition, on_delete=models.PROTECT, verbose_name="Competição", related_name="subscriptions"
     )
     team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time", related_name="subscriptions")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
