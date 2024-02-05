@@ -95,9 +95,7 @@ class Competition(models.Model):
             raise ValidationError("Competição não tem vagas")
 
         team_already_subscribed = (
-            self.subscriptions.exclude(status=SubscriptionStatus.CANCELED)
-            .filter(team=team)
-            .exists()
+            self.subscriptions.non_canceled().filter(team=team).exists()
         )
         if team_already_subscribed:
             raise ValidationError("Este time já está inscrito nesta competição.")
@@ -115,7 +113,9 @@ class Competition(models.Model):
 
         for member in team.get_members():
             if CompetitionSubscription.objects.filter(
-                ~Q(team=team), competition=self, team__members=member
+                ~Q(team=team),
+                Q(team__members=member) | Q(team__leader=member),
+                competition=self,
             ).exists():
                 raise ValidationError(
                     f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
@@ -128,7 +128,7 @@ class SubscriptionStatus(models.TextChoices):
     CANCELED = "CANCELED", "Cancelada"
 
 
-class SubscriptionManager(models.Manager):
+class SubscriptionQuerySet(models.QuerySet):
     def confirmed(self):
         return self.filter(status=SubscriptionStatus.CONFIRMED)
 
@@ -168,10 +168,16 @@ class CompetitionSubscription(models.Model):
     )
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
 
-    objects = SubscriptionManager()
+    objects = SubscriptionQuerySet.as_manager()
 
     def is_confirmed(self):
         return self.status == SubscriptionStatus.CONFIRMED
+
+    def is_canceled(self):
+        return self.status == SubscriptionStatus.CANCELED
+
+    def is_pending(self):
+        return self.status == SubscriptionStatus.PENDING
 
     def confirm(self):
         self.paid_at = timezone.now()
@@ -182,12 +188,17 @@ class CompetitionSubscription(models.Model):
         self.status = SubscriptionStatus.CANCELED
         self.save()
 
+    def save(self, *args, **kwargs):
+        if self.competition.subscription_price == 0:
+            self.status = SubscriptionStatus.CONFIRMED
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Inscrição"
         verbose_name_plural = "Inscrições"
 
     def __str__(self):
-        return f"{self.competition}"
+        return f"Inscrição de {self.team} em {self.competition}"
 
 
 class CompetitionResults(models.Model):

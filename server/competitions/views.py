@@ -17,7 +17,6 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
     UserPassesTestMixin,
 )
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from .models import (
     Competition,
@@ -25,6 +24,7 @@ from .models import (
     CompetitionRate,
     CompetitionResults,
     CompetitionDocument,
+    SubscriptionStatus,
 )
 from .forms import (
     CompetitionForm,
@@ -116,26 +116,21 @@ class AddTeamToCompetitionView(LoginRequiredMixin, PermissionRequiredMixin, Crea
         return kwargs
 
 
-class cancelSubscriptionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class CancelSubscriptionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = CompetitionSubscription
+    fields = []
+    template_name = "competitions/confirm_cancel_subscription.html"
+    success_url = reverse_lazy("competitions:my_competitions")
 
     def test_func(self):
         subscription = self.get_object()
         return subscription.team.leader == self.request.user
 
-    def get_success_url(self) -> str:
-        return reverse("competitions:my_competitions")
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Cancelar inscrição"
-        return context
-
-    def post(self, request, *args, **kwargs):
-        subscription = self.get_object()
+    def form_valid(self, form):
+        subscription = form.instance
         subscription.cancel()
         messages.success(self.request, "A inscrição foi cancelada")
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 class CompetitionWinnersView(
@@ -222,13 +217,15 @@ class MyCompetitionsView(LoginRequiredMixin, TemplateView):
         subscribed_events = Competition.objects.filter(
             subscribed_teams__leader=self.request.user
         ).distinct()
-        my_subscriptions = CompetitionSubscription.objects.filter(
-            team__leader=self.request.user
-        )
 
         context["organized_competitions"] = organized_competitions
         context["subscribed_events"] = subscribed_events
-        context["my_subscriptions"] = my_subscriptions
+        context["confirmed_subscriptions"] = CompetitionSubscription.objects.filter(
+            team__leader=self.request.user, status=SubscriptionStatus.CONFIRMED
+        )
+        context["pending_subscriptions"] = CompetitionSubscription.objects.filter(
+            team__leader=self.request.user, status=SubscriptionStatus.PENDING
+        )
         return context
 
 
@@ -294,3 +291,21 @@ class CompetitionUpdateView(CompetitionManagementBaseView, UpdateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Atualizar Competição"
         return context
+
+
+class PaySubscriptionView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
+    model = CompetitionSubscription
+    fields = []
+    template_name = "competitions/pay_subscription.html"
+    success_url = reverse_lazy("competitions:my_competitions")
+
+    def test_func(self):
+        return self.request.user == self.get_object().team.leader
+
+    def form_valid(self, form):
+        instance: CompetitionSubscription = form.instance
+        if not instance.is_pending():
+            form.add_error(None, "Só é possível confirmar inscrições pendentes")
+            return self.form_invalid(form)
+        instance.confirm()
+        return super().form_valid(form)

@@ -54,6 +54,20 @@
         </div>
     </div>
 
+    <div class="row mt-3">
+        <div class="col-lg-6">
+            <h2>Resultados <a href="{% url 'competitions:assign_winners' pk=object.id%}"><i class="material-icons">edit</i></a></h2>
+            <hr>
+            <ul>
+                {% for record in object.results.all %}
+                    <li>{{record.place}} - {{record.team}}</li>
+                {% empty %}
+                    <li>Não há resultados cadastrados. </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
     <div class="row mt-lg-4">
         <div class="col-lg-6">
             <h2>Inscrições</h2>

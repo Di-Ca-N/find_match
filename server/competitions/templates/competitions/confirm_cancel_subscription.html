@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Confirmar Cancelamento da inscrição</h1>
+    <ul>
+        <li><strong>Competição:</strong> <a href="{{object.competition.get_absolute_url}}">{{object.competition}}</a> </li>
+        <li><strong>Time:</strong> <a href="{{object.team.get_absolute_url}}">{{object.team}}</a></li>
+    </ul>
+    <p><strong>Atenção:Isso não pode ser desfeito</strong></p>
+    <form method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" class="btn btn-danger">Cancelar Inscrição</button>
+        <a href="{% url 'competitions:my_competitions' %}" class="btn btn-primary">Voltar</a>
+    </form>
+{% endblock content %}

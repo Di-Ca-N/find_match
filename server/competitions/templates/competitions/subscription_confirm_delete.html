@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="{% url 'competitions:remove_subscription' pk=subscription.id%}" method="POST" style="display:inline" class="m-0 p-0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-link text-danger p-0 m-0">
+            <i class="material-icons small">delete</i>
+        </button>
+    </form>
+{% endblock content %}

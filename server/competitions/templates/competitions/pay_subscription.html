@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Confirmar pagamento de inscrição</h1>
+    <ul>
+        <li><strong>Competição:</strong> <a href="{{object.competition.get_absolute_url}}">{{object.competition}}</a></li>
+        <li><strong>Time:</strong> <a href="{{object.team.get_absolute_url}}">{{object.team}}</a></li>
+        <li><strong>Valor da inscrição:</strong> {% if object.competition.subscription_price == 0%}Gratuito{%else%}R$ {{object.competition.subscription_price}}{%endif%}</li>
+    </ul>
+    <form method="POST">
+        {{form.errors}}
+        {% csrf_token %}
+        <button type="submit" class="btn btn-find-match login">Confirmar</button>
+    </form>
+{% endblock content %}

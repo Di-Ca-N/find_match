@@ -3,8 +3,8 @@
 {% block content %}
 <h1>Meus Eventos</h1>
 
+{% if perms.competitions.add_competition %}
 <div class="row my-5">
-    {% if perms.competitions.add_competition %}
     <h2>Eventos organizados</h2>
     <div class="table-responsive-sm">
         <table class="table">
@@ -50,12 +50,12 @@
             </tfoot>
         </table>
     </div>
-    {% endif %}
 </div>
+{% endif %}
 
-<div class="row">
-    <h2>Minhas Inscrições</h2>
-    <div class="table-responsive">
+<div class="row mt-3">
+    <h2>Inscrições</h2>
+    <div class="table-responsive col-lg-6">
         <table class="table">
             <thead>
                 <tr>
@@ -64,31 +64,47 @@
                     <th>Time</th>
                     <th>Status</th>
                     <th>Data de inscrição</th>
-                    <th>Ações</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for subscription in my_subscriptions %}
+                {% for subscription in pending_subscriptions %}
                     <tr>
                         <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription}}</a></td>
+                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
                         <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
                         <td>{{subscription.get_status_display}}</td>
                         <td>{{subscription.created_at}}</td>
                         <td>
-                            <form action="{% url 'competitions:remove_subscription' pk=subscription.id%}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link text-danger p-0">
-                                    <i class="material-icons small">delete</i>
-                                </button>
-                            </form>
+                            {% if subscription.is_pending %}
+                                <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
+                                    <i class="material-icons">attach_money</i>
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
-                {% empty %}
+                {% endfor %}
+                {% for subscription in confirmed_subscriptions %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
+                        <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
+                        <td>{{subscription.get_status_display}}</td>
+                        <td>{{subscription.created_at}}</td>
+                        <td>
+                            {% if subscription.is_pending %}
+                                <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
+                                    <i class="material-icons">attach_money</i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if not confirmed_subscriptions and not pending_subscriptions %}
                     <tr>
                         <td colspan="100">Você ainda não se inscreveu em eventos</td>
                     </tr>
-                {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     </div>

@@ -25,11 +25,6 @@ urlpatterns = [
     ),
     path("my/", views.MyCompetitionsView.as_view(), name="my_competitions"),
     path(
-        "my/<int:pk>",
-        views.cancelSubscriptionView.as_view(),
-        name="remove_subscription",
-    ),
-    path(
         "<int:pk>/assign-winners/",
         views.CompetitionWinnersView.as_view(),
         name="assign_winners",
@@ -48,5 +43,15 @@ urlpatterns = [
         "<int:competition_id>/documents/<int:document_id>/delete",
         views.RemoveCompetitionDocument.as_view(),
         name="delete_document",
+    ),
+    path(
+        "subscriptions/<int:pk>/pay",
+        views.PaySubscriptionView.as_view(),
+        name="pay_subscription",
+    ),
+    path(
+        "subscriptions/<int:pk>/cancel",
+        views.CancelSubscriptionView.as_view(),
+        name="remove_subscription",
     ),
 ]
