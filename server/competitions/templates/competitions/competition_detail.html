@@ -43,14 +43,24 @@
         {% else %}
         <div class="col-12">
             <h3 class="text-start fw-bold">Resultados</h3>
+            {% if team_winners.0.winner %}
             <div class="podium-container d-flex justify-content-center">
-                <div class="podium-member podium-first-member">Member 1</div>
-                <div class="podium-member podium-second-member">Member 2</div>
-                <div class="podium-member podium-third-member">Member 3</div>
+                {% for item in team_winners %}
+                    <div class="podium-member {{ item.class }}">
+                        {% if item.winner %}
+                        {{ item.winner }} - {{ forloop.counter }}º
+                        {% else %}
+                        <p>---</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
                 <div class="d-flex justify-content-center align-items-center podium-base">
                     <div class="podium podium-first"></div>
                 </div>
-            </div>     
+            </div> 
+            {% else %}
+            <p>Aguardando análise dos resultados...</p>
+            {% endif %}  
         </div>
         {% endif %}
     </div>

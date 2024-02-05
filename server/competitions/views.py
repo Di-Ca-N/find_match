@@ -56,21 +56,25 @@ class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         context["title"] = "Criar competição"
         return context
 
-    def get_success_url(self) -> str:
-        return reverse(
-            "competitions:manage_competition",
-            kwargs={"competition_id": self.get_object_pk()},
-        )
-
-
 class CompetitionDetailView(DetailView):
     model = Competition
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        winners = self.get_object().results.all().order_by("place")
+        team_winners = []
+        class_names = ['podium-first-member', 'podium-second-member', 'podium-third-member']
+        for i in range(3):
+            try:
+                winner = winners[i]
+            except IndexError:
+                winner = None
+            team_winners.append({'winner': winner, 'class': class_names[i]})
+
         context = super().get_context_data(**kwargs)
         context[
             "user_can_evaluate_competition"
         ] = self.get_object().can_evaluate_competition(self.request.user)
+        context["team_winners"] =  team_winners
         return context
 
 
@@ -159,8 +163,11 @@ class CompetitionWinnersView(
             "third_place": 3,
         }
 
+        # cleaned_data is a dictionary with the form fields and their values, after is_valid() is called
+        # it contains only the fields that have been validated
+
         for field_name, placement in placements.items():
-            team = form.cleaned_data.get(field_name)
+            team = form.cleaned_data.get(field_name) # get the team from the form cleaned data
             if team is not None:
                 CompetitionResults.objects.update_or_create(
                     competition=competition, place=placement, defaults={"team": team}
