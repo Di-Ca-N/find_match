@@ -3,22 +3,27 @@
 {% block content %}
     <h1>{{object.title}}</h1>
     <hr>
-    <h2>Dados da Competição <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a></h2>
 
-    <ul>
-        <li><strong>Data:</strong> {{object.datetime}} - {{object.datetime_end}}</li>
-        <li><strong>Número de Vagas: </strong> {%if object.max_slots == 0%}Ilimitado{%else %}{{object.max_slots}}{%endif%}</li>
-        <li><strong>Modalidade:</strong> {{object.modality}} </li>
-        <li><strong>Local:</strong> {{object.address}} - {{object.city}}/{{object.state}}</li>
-        <li><strong>Prazo de Inscrições:</strong> {{object.subscription_until}}</li>
-        <li><strong>Preço de Inscrição:</strong> {%if object.subscription_price == 0%}Gratuito{%else %}R$ {{object.subscription_price}}{%endif%}</li>
-    </ul>
-    
-    <hr>
-    <h2>Documentos</h2>
-    
     <div class="row">
         <div class="col-lg-6">
+            <h2>Dados da Competição <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a></h2>
+            <hr>
+            <ul>
+                <li><strong>Data:</strong> {{object.datetime}} - {{object.datetime_end}}</li>
+                <li><strong>Número de Vagas: </strong> {%if object.max_slots == 0%}Ilimitado{%else %}{{object.max_slots}}{%endif%}</li>
+                <li><strong>Modalidade:</strong> {{object.modality}} </li>
+                <li><strong>Local:</strong> {{object.address}} - {{object.city}}/{{object.state}}</li>
+                <li><strong>Prazo de Inscrições:</strong> {{object.subscription_until}}</li>
+                <li><strong>Preço de Inscrição:</strong> {%if object.subscription_price == 0%}Gratuito{%else %}R$ {{object.subscription_price}}{%endif%}</li>
+            </ul>
+        </div>
+    </div>
+    
+
+    <div class="row mt-lg-4">
+        <div class="col-lg-6">
+            <h2>Documentos</h2>
+            <hr>
             <table class="table">
                 <thead>
                     <tr>
@@ -48,38 +53,54 @@
             <a href="{% url 'competitions:add_document' competition_id=object.id%}" class="btn btn-find-match">Adicionar Documento</a>
         </div>
     </div>
-    
-    <hr>
-    <h2>Inscrições</h2>
-    <div class="row">
+
+    <div class="row mt-lg-4">
         <div class="col-lg-6">
+            <h2>Inscrições</h2>
+            <hr>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Equipe</th>
-                        <th>Líder</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Equipe</th>
+                        <th scope="col">Líder</th>
+                        <th scope="col">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for subscription in subscriptions %}
+                    <tr>
+                        <th colspan="100">Confirmadas</th>
+                    </tr>
+                    {% for subscription in confirmed_subscriptions %}
                         <tr>
-                            <td>{{forloop.counter}}</td>
+                            <th scope="row">{{forloop.counter}}</th>
                             <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
                             <td>{{subscription.team.leader.get_full_name}}</a></td>
-                            <td>{{subscription.get_status_display}}</a></td>
                             <td></td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="100">Sem documentos para mostrar</td>
+                            <td colspan="100">Não há inscrições confirmadas</td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <th colspan=100>Pendentes</th>
+                    </tr>
+                    {% for subscription in pending_subscriptions %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
+                            <td>{{subscription.team.leader.get_full_name}}</a></td>
+                            <td></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="100">Não há inscrições pendentes</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'competitions:add_document' competition_id=object.id%}" class="btn btn-find-match">Adicionar Documento</a>
         </div>
     </div>
 {% endblock content %}

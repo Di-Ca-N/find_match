@@ -87,7 +87,7 @@ class Competition(models.Model):
     def has_open_slots(self):
         return (
             self.max_slots == 0
-            or self.confirmed_subscriptions().count() < self.max_slots
+            or self.subscriptions.confirmed().count() < self.max_slots
         )
 
     def check_team_subscription(self, team):
@@ -128,6 +128,25 @@ class SubscriptionStatus(models.TextChoices):
     CANCELED = "CANCELED", "Cancelada"
 
 
+class SubscriptionManager(models.Manager):
+    def confirmed(self):
+        return self.filter(status=SubscriptionStatus.CONFIRMED)
+
+    def non_canceled(self):
+        return self.exclude(status=SubscriptionStatus.CANCELED)
+
+    def pending(self):
+        return self.filter(status=SubscriptionStatus.PENDING)
+
+    def canceled(self):
+        return self.filter(status=SubscriptionStatus.CANCELED)
+
+    def happening_between(self, start, end):
+        return self.filter(
+            competition__datetime__lt=end, competition__datetime_end__gt=start
+        )
+
+
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
         Competition,
@@ -148,6 +167,8 @@ class CompetitionSubscription(models.Model):
         default=SubscriptionStatus.PENDING,
     )
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name="Pago em")
+
+    objects = SubscriptionManager()
 
     def is_confirmed(self):
         return self.status == SubscriptionStatus.CONFIRMED

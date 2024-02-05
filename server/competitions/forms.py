@@ -116,7 +116,9 @@ class CompetitionWinnersForm(forms.ModelForm):
 
 
 class CompetitionDocumentForm(forms.ModelForm):
-    competition = forms.ModelChoiceField(Competition.objects.all(), disabled=True)
+    competition = forms.ModelChoiceField(
+        Competition.objects.all(), disabled=True, widget=forms.widgets.HiddenInput()
+    )
 
     class Meta:
         model = CompetitionDocument

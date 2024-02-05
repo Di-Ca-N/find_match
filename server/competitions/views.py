@@ -23,7 +23,6 @@ from .models import (
     Competition,
     CompetitionSubscription,
     CompetitionRate,
-    SubscriptionStatus,
     CompetitionResults,
     CompetitionDocument,
 )
@@ -276,9 +275,8 @@ class ManageCompetitionView(CompetitionManagementBaseView, DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["subscriptions"] = self.get_object().subscriptions.exclude(
-            status=SubscriptionStatus.CANCELED
-        )
+        context["confirmed_subscriptions"] = self.get_object().subscriptions.confirmed()
+        context["pending_subscriptions"] = self.get_object().subscriptions.pending()
         return context
 
 

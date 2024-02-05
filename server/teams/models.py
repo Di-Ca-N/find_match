@@ -42,13 +42,7 @@ class Team(models.Model):
         return self.get_num_members() == self.modality.team_size
 
     def is_busy_at(self, start, end):
-        from competitions.models import SubscriptionStatus
-
-        return (
-            self.subscriptions.exclude(status=SubscriptionStatus.CANCELED)
-            .filter(competition__datetime__lt=end, competition__datetime_end__gt=start)
-            .exists()
-        )
+        return self.subscriptions.non_canceled().happening_between(start, end).exists()
 
 
 class TeamMember(models.Model):
