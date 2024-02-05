@@ -80,22 +80,27 @@ class Competition(models.Model):
 
         # ToDo: Adicionar restrição de usuário estar cadastrado na competição
         return not user_already_evaluated and self.competition_ended()
-    
+
     def confirmed_subscriptions(self):
         return self.subscriptions.filter(status=SubscriptionStatus.CONFIRMED)
 
     def has_open_slots(self):
-        return self.max_slots == 0 or self.confirmed_subscriptions().count() < self.max_slots
+        return (
+            self.max_slots == 0
+            or self.confirmed_subscriptions().count() < self.max_slots
+        )
 
     def check_team_subscription(self, team):
         if not self.has_open_slots():
             raise ValidationError("Competição não tem vagas")
 
-        team_already_subscribed = self.subscriptions.exclude(status=SubscriptionStatus.CANCELED).filter(team=team).exists()
+        team_already_subscribed = (
+            self.subscriptions.exclude(status=SubscriptionStatus.CANCELED)
+            .filter(team=team)
+            .exists()
+        )
         if team_already_subscribed:
-            raise ValidationError(
-                "Este time já está inscrito nesta competição."
-            )
+            raise ValidationError("Este time já está inscrito nesta competição.")
 
         if team.is_busy_at(self.datetime, self.datetime_end):
             raise ValidationError(
@@ -125,9 +130,17 @@ class SubscriptionStatus(models.TextChoices):
 
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
-        Competition, on_delete=models.PROTECT, verbose_name="Competição", related_name="subscriptions"
+        Competition,
+        on_delete=models.PROTECT,
+        verbose_name="Competição",
+        related_name="subscriptions",
     )
-    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time", related_name="subscriptions")
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.PROTECT,
+        verbose_name="Time",
+        related_name="subscriptions",
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     status = models.CharField(
         max_length=10,
@@ -155,18 +168,14 @@ class CompetitionSubscription(models.Model):
     def __str__(self):
         return f"{self.competition}"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-    # def get_absolute_url(self):
-    #     competition_pk = Competition.objects.get("pk")
-    #     return reverse("competitions:dashboard",kwargs={"pk": competition_pk})
 
 class CompetitionResults(models.Model):
     competition = models.ForeignKey(
         Competition, on_delete=models.CASCADE, related_name="results"
     )
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team_results")
+    team = models.ForeignKey(
+        Team, on_delete=models.CASCADE, related_name="team_results"
+    )
     place = models.PositiveIntegerField(verbose_name="Colocação")
 
     class Meta:
@@ -175,6 +184,7 @@ class CompetitionResults(models.Model):
 
     def __str__(self):
         return f"Resultado de {self.competition}"
+
 
 class RatingChoices(models.IntegerChoices):
     EXCELLENT = (5, "Excelente")
@@ -201,16 +211,23 @@ class CompetitionRate(models.Model):
 
 
 class CompetitionDocument(models.Model):
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE, related_name="documents", verbose_name="Competição")
+    competition = models.ForeignKey(
+        Competition,
+        on_delete=models.CASCADE,
+        related_name="documents",
+        verbose_name="Competição",
+    )
     name = models.CharField(max_length=50, verbose_name="Nome do arquivo")
     file = models.FileField(verbose_name="Arquivo")
     creation = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
-
     class Meta:
         verbose_name = "Documento de Competição"
         verbose_name = "Documentos de Competição"
         constraints = [
-            models.UniqueConstraint(fields=["competition", "name"], name="unique_document_name_per_competition")
+            models.UniqueConstraint(
+                fields=["competition", "name"],
+                name="unique_document_name_per_competition",
+            )
         ]

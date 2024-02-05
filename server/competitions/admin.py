@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import Competition, CompetitionRate, CompetitionSubscription, CompetitionDocument
+from .models import (
+    Competition,
+    CompetitionRate,
+    CompetitionSubscription,
+    CompetitionDocument,
+)
 
 
 admin.site.register(Competition)

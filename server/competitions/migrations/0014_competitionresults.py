@@ -5,24 +5,45 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('competitions', '0013_merge_20240202_1640'),
-        ('teams', '0003_alter_team_leader_alter_team_members_and_more'),
+        ("competitions", "0013_merge_20240202_1640"),
+        ("teams", "0003_alter_team_leader_alter_team_members_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CompetitionResults',
+            name="CompetitionResults",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('place', models.PositiveIntegerField(verbose_name='Colocação')),
-                ('competition', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='results', to='competitions.competition')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='team_results', to='teams.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("place", models.PositiveIntegerField(verbose_name="Colocação")),
+                (
+                    "competition",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="results",
+                        to="competitions.competition",
+                    ),
+                ),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="team_results",
+                        to="teams.team",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Resultado de Competição',
-                'verbose_name_plural': 'Resultados de Competições',
+                "verbose_name": "Resultado de Competição",
+                "verbose_name_plural": "Resultados de Competições",
             },
         ),
     ]

@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.urls import reverse
 
 from accounts.models import User
@@ -44,7 +43,12 @@ class Team(models.Model):
 
     def is_busy_at(self, start, end):
         from competitions.models import SubscriptionStatus
-        return self.subscriptions.exclude(status=SubscriptionStatus.CANCELED).filter(competition__datetime__lt=end, competition__datetime_end__gt=start).exists()
+
+        return (
+            self.subscriptions.exclude(status=SubscriptionStatus.CANCELED)
+            .filter(competition__datetime__lt=end, competition__datetime_end__gt=start)
+            .exists()
+        )
 
 
 class TeamMember(models.Model):

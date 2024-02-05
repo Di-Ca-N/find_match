@@ -1,7 +1,13 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from competitions.models import Competition, CompetitionRate, CompetitionResults, CompetitionDocument, CompetitionSubscription
+from competitions.models import (
+    Competition,
+    CompetitionRate,
+    CompetitionResults,
+    CompetitionDocument,
+    CompetitionSubscription,
+)
 from django.db.models import Q
 from teams.models import Team, TeamMember
 

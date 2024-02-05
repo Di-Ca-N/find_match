@@ -1,7 +1,6 @@
 from typing import Any
 from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     CreateView,
     ListView,
@@ -92,7 +91,7 @@ class DeleteTeamMemberView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == team.leader
 
     def form_valid(self, form):
-        messages.success(self.request, f"Membro removido", "danger")
+        messages.success(self.request, "Membro removido", "danger")
         return super().form_valid(form)
 
     def get_object(self, queryset=None) -> TeamMember:
