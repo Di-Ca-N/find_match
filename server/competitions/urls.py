@@ -6,7 +6,7 @@ app_name = "competitions"
 urlpatterns = [
     path(
         "<int:pk>/subscribe/",
-        views.addTeamToCompetitionView.as_view(),
+        views.AddTeamToCompetitionView.as_view(),
         name="competition_subscribe",
     ),
     path("", views.CompetitionListView.as_view(), name="list_competition"),
@@ -25,5 +25,8 @@ urlpatterns = [
     ),
     path("my/", views.MyCompetitionsView.as_view(), name="my_competitions"),
     path("my/<int:pk>", views.cancelSubscriptionView.as_view(), name="remove_subscription"),
-    path('competition/<int:pk>/assign-winners/', views.CompetitionWinnersView.as_view(), name='assign_winners'),
+    path('<int:pk>/assign-winners/', views.CompetitionWinnersView.as_view(), name='assign_winners'),
+    path("<int:competition_id>/documents/add", views.AddCompetitionDocument.as_view(), name="add_document"),
+    path("<int:pk>/manage", views.ManageCompetitionView.as_view(), name="manage_competition"),
+    path("<int:competition_id>/documents/<int:document_id>/delete", views.RemoveCompetitionDocument.as_view(), name="delete_document")
 ]

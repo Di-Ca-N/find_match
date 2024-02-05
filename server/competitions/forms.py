@@ -1,6 +1,6 @@
 from django import forms
 from accounts.models import User
-from .models import Competition, CompetitionResults, CompetitionSubscription, Team, CompetitionRate
+from .models import Competition, CompetitionDocument, CompetitionResults, CompetitionSubscription, Team, CompetitionRate
 
 
 class CompetitionForm(forms.ModelForm):
@@ -58,6 +58,10 @@ class CompetitionSubscribeForm(forms.ModelForm):
         if self.user is not None :
             self.fields["team"].queryset = Team.objects.filter(leader=self.user , modality=modality)
 
+    def clean(self):
+        competition:Competition = self.cleaned_data["competition"]
+        team = self.cleaned_data["team"]
+        competition.check_team_subscription(team)
 
 class CompetitionRateForm(forms.ModelForm):
     user = forms.ModelChoiceField(
@@ -78,9 +82,22 @@ class CompetitionWinnersForm(forms.ModelForm):
     class Meta:
         model = CompetitionResults
         fields = []
+
     def __init__(self, *args, **kwargs):
         competition_id = kwargs.pop("competition_id", None)
         super(CompetitionWinnersForm, self).__init__(*args, **kwargs)
         self.fields["first_place"].queryset = Team.objects.filter(competitions__id=competition_id)
         self.fields["second_place"].queryset = Team.objects.filter(competitions__id=competition_id)
         self.fields["third_place"].queryset = Team.objects.filter(competitions__id=competition_id)
+
+
+class CompetitionDocumentForm(forms.ModelForm):
+    competition = forms.ModelChoiceField(Competition.objects.all(), disabled=True)
+
+    class Meta:
+        model = CompetitionDocument
+        fields = [
+            "competition",
+            "name",
+            "file"
+        ]

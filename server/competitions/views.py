@@ -1,4 +1,7 @@
 from typing import Any
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
+from django.urls.exceptions import NoReverseMatch
 from django.forms import ValidationError
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -8,6 +11,7 @@ from django.views.generic import (
     DetailView,
     UpdateView,
     TemplateView,
+    DeleteView
 )
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -15,10 +19,9 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin,
 )
 from django.http import HttpResponseRedirect
-from django.db import transaction
 from django.urls import reverse_lazy
-from .models import Competition, CompetitionSubscription, CompetitionRate, SubscriptionStatus, CompetitionResults, Team
-from .forms import CompetitionForm, CompetitionSubscribeForm, CompetitionRateForm, CompetitionWinnersForm
+from .models import Competition, CompetitionSubscription, CompetitionRate, SubscriptionStatus, CompetitionResults, CompetitionDocument
+from .forms import CompetitionForm, CompetitionSubscribeForm, CompetitionRateForm, CompetitionWinnersForm, CompetitionDocumentForm
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
@@ -39,6 +42,9 @@ class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         context = super().get_context_data(**kwargs)
         context["title"] = "Criar competição"
         return context
+    
+    def get_success_url(self) -> str:
+        return reverse("competitions:manage_competition", kwargs={"competition_id": self.get_object_pk()})
 
 
 class CompetitionDetailView(DetailView):
@@ -52,27 +58,11 @@ class CompetitionDetailView(DetailView):
         return context
 
 
-class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    model = Competition
-    form_class = CompetitionForm
-    permission_required = "competitions.change_competition"
-
-    def has_permission(self) -> bool:
-        authorized = super().has_permission()
-        obj: Competition = self.get_object()
-        return authorized and obj.can_edit(self.request.user)
-
-
-# Create your views here.
-class addTeamToCompetitionView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, CreateView):
+class AddTeamToCompetitionView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = CompetitionSubscription
     form_class = CompetitionSubscribeForm
     template_name = "competitions/competition_subscribe.html"
     permission_required = "competitions.add_competitionsubscription"
-
-    # def has_permission(self) -> bool:
-    #     has_permission = super().has_permission()
-    #     return has_permission
 
     def get_initial(self):
         competition_id = self.kwargs.get("pk")
@@ -80,13 +70,12 @@ class addTeamToCompetitionView(LoginRequiredMixin, PermissionRequiredMixin, User
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        # context["competition"] = Competition.objects.get(pk=self.kwargs["competition"])
+        context["competition"] = Competition.objects.get(pk=self.kwargs["pk"])
         context["title"] = "Inscrever time"
         return context
 
     def get_success_url(self) -> str:
-        competition = Competition.objects.get(pk=self.kwargs["pk"])
-        return reverse("competitions:dashboard", kwargs={"pk": competition.pk})
+        return reverse("competitions:my_competitions")
 
     def form_valid(self, form):
         team = form.instance.team
@@ -94,19 +83,11 @@ class addTeamToCompetitionView(LoginRequiredMixin, PermissionRequiredMixin, User
         if team.leader != self.request.user:
             self.request.session["error_message"] = "Você não é o líder do time"
             raise PermissionDenied("Você não tem permissão para inscrever este time.")
+        
         try:
-            competition = Competition.objects.get(pk=self.kwargs["pk"])
-            slots = competition.competitionsubscription_set.filter(status=SubscriptionStatus.CONFIRMED).count()
-
-            if competition.max_slots - slots > 0:
-                response = super().form_valid(form)
-                return response
-            else:
-                # error message
-                messages.error(self.request, "Competição sem vagas disponíveis", "danger")
-                return HttpResponseRedirect(
-                    reverse("competitions:dashboard", kwargs={"pk": competition.pk})
-                )
+            response = super().form_valid(form)
+            messages.success(self.request, "O time foi cadastrado na competição")
+            return response
         except ValidationError as e:
             # Se uma ValidationError for capturada, adiciona os erros ao formulário
             for field, errors in e.message_dict.items():
@@ -128,8 +109,7 @@ class cancelSubscriptionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         return subscription.team.leader == self.request.user
 
     def get_success_url(self) -> str:
-        competition = self.get_object().competition
-        return reverse("competitions:my_competitions", kwargs={"pk": competition.pk})
+        return reverse("competitions:my_competitions")
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -139,7 +119,9 @@ class cancelSubscriptionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
     def post(self, request, *args, **kwargs):
         subscription = self.get_object()
         subscription.cancel()
+        messages.success(self.request, "A inscrição foi cancelada")
         return HttpResponseRedirect(self.get_success_url())
+
 
 class CompetitionWinnersView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Competition
@@ -225,4 +207,75 @@ class MyCompetitionsView(LoginRequiredMixin, TemplateView):
         context["organized_competitions"] = organized_competitions
         context["subscribed_events"] = subscribed_events
         context["my_subscriptions"] = my_subscriptions
+        return context
+
+class CompetitionManagementBaseView(UserPassesTestMixin, LoginRequiredMixin):
+    def test_func(self):
+        competition = Competition.objects.get(pk=self.get_object_pk())
+        return self.request.user == competition.organizer
+
+    def get_object_pk(self):
+        return self.kwargs.get("pk") or self.kwargs.get("competition_id")
+
+    def get_success_url(self) -> str:
+        try:
+            return reverse("competitions:manage_competition", kwargs={"competition_id": self.get_object_pk()})
+        except NoReverseMatch:
+            return reverse("competitions:manage_competition", kwargs={"pk": self.get_object_pk()})
+
+
+class AddCompetitionDocument(CompetitionManagementBaseView, CreateView):
+    model = CompetitionDocument
+    form_class = CompetitionDocumentForm
+    template_name = "competitions/add_documents.html"
+
+    def get_initial(self) -> dict[str, Any]:
+        competition = Competition.objects.get(pk=self.kwargs["competition_id"])
+        return {
+            "competition": competition
+        }
+
+
+class RemoveCompetitionDocument(CompetitionManagementBaseView, DeleteView):
+    model = CompetitionDocument
+    
+    def get_object(self) -> Model:
+        return CompetitionDocument.objects.get(pk=self.kwargs["document_id"])
+
+
+class AddCompetitionDocument(CompetitionManagementBaseView, CreateView):
+    model = CompetitionDocument
+    form_class = CompetitionDocumentForm
+    template_name = "competitions/add_documents.html"
+
+    def get_initial(self) -> dict[str, Any]:
+        competition = Competition.objects.get(pk=self.kwargs["competition_id"])
+        return {
+            "competition": competition
+        }
+
+
+class ManageCompetitionView(CompetitionManagementBaseView, DetailView):
+    model = Competition
+    template_name = "competitions/manage_competition.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["subscriptions"] = self.get_object().subscriptions.exclude(status=SubscriptionStatus.CANCELED)
+        return context
+
+
+class CompetitionUpdateView(CompetitionManagementBaseView, UpdateView):
+    model = Competition
+    form_class = CompetitionForm
+    permission_required = "competitions.change_competition"
+
+    def has_permission(self) -> bool:
+        authorized = super().has_permission()
+        obj: Competition = self.get_object()
+        return authorized and obj.can_edit(self.request.user)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Atualizar Competição"
         return context

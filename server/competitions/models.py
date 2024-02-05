@@ -80,6 +80,41 @@ class Competition(models.Model):
 
         # ToDo: Adicionar restrição de usuário estar cadastrado na competição
         return not user_already_evaluated and self.competition_ended()
+    
+    def confirmed_subscriptions(self):
+        return self.subscriptions.filter(status=SubscriptionStatus.CONFIRMED)
+
+    def has_open_slots(self):
+        return self.max_slots == 0 or self.confirmed_subscriptions().count() < self.max_slots
+
+    def check_team_subscription(self, team):
+        if not self.has_open_slots():
+            raise ValidationError("Competição não tem vagas")
+
+        team_already_subscribed = self.subscriptions.exclude(status=SubscriptionStatus.CANCELED).filter(team=team).exists()
+        if team_already_subscribed:
+            raise ValidationError(
+                "Este time já está inscrito nesta competição."
+            )
+
+        if team.is_busy_at(self.datetime, self.datetime_end):
+            raise ValidationError(
+                "Este time já está inscrito em outra competição no mesmo horário."
+            )
+
+        if not team.is_complete():
+            raise ValidationError("Time não está completo")
+
+        if team.modality != self.modality:
+            raise ValidationError("Time não é da modalidade correta")
+
+        for member in team.get_members():
+            if CompetitionSubscription.objects.filter(
+                ~Q(team=team), competition=self, team__members=member
+            ).exists():
+                raise ValidationError(
+                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
+                )
 
 
 class SubscriptionStatus(models.TextChoices):
@@ -90,9 +125,9 @@ class SubscriptionStatus(models.TextChoices):
 
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
-        Competition, on_delete=models.PROTECT, verbose_name="Competição"
+        Competition, on_delete=models.PROTECT, verbose_name="Competição", related_name="subscriptions"
     )
-    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time")
+    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time", related_name="subscriptions")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     status = models.CharField(
         max_length=10,
@@ -120,34 +155,7 @@ class CompetitionSubscription(models.Model):
     def __str__(self):
         return f"{self.competition}"
 
-    def clean(self):
-        team_is_in_competition = CompetitionSubscription.objects.filter(
-            team=self.team, competition=self.competition
-        ).exists()
-        team_is_busy = CompetitionSubscription.objects.filter(
-            team=self.team, competition__datetime=self.competition.datetime
-        ).exists()
-        team_is_complete = self.team.is_complete()
-
-        if team_is_in_competition:
-            raise ValidationError("Este time já está inscrito nesta competição.")
-        if team_is_busy:
-            raise ValidationError(
-                "Este time já está inscrito em outra competição no mesmo horário."
-            )
-        for member in self.team.get_members():
-            if CompetitionSubscription.objects.filter(
-                ~Q(team=self.team), competition=self.competition, team__members=member
-            ).exists():
-                raise ValidationError(
-                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
-                )
-        if not team_is_complete:
-            raise ValidationError("O time não está completo.")
-        
-
     def save(self, *args, **kwargs):
-        self.clean()
         super().save(*args, **kwargs)
 
     # def get_absolute_url(self):
@@ -190,3 +198,19 @@ class CompetitionRate(models.Model):
 
     def __str__(self):
         return f"Avaliação de {self.competition} por {self.user}"
+
+
+class CompetitionDocument(models.Model):
+    competition = models.ForeignKey(Competition, on_delete=models.CASCADE, related_name="documents", verbose_name="Competição")
+    name = models.CharField(max_length=50, verbose_name="Nome do arquivo")
+    file = models.FileField(verbose_name="Arquivo")
+    creation = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        verbose_name = "Documento de Competição"
+        verbose_name = "Documentos de Competição"
+        constraints = [
+            models.UniqueConstraint(fields=["competition", "name"], name="unique_document_name_per_competition")
+        ]

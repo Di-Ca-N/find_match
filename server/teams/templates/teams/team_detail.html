@@ -23,18 +23,21 @@
                         <td>{{ member.get_full_name }}</td>
                         <td>{{ member.cpf }}</td>
                         <td>
-                            {% if member != team.leader %}
-                            <form action="{% url 'teams:team_remove_member' team_id=team.id user_id=member.id%}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link text-danger p-0">
-                                    <i class="material-icons small">delete</i>
-                                </button>
-                            </form>
+                            {% if user == team.leader %}
+                                {% if member != team.leader %}
+                                <form action="{% url 'teams:team_remove_member' team_id=team.id user_id=member.id%}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link text-danger p-0">
+                                        <i class="material-icons small">delete</i>
+                                    </button>
+                                </form>
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
+                {% if user == team.leader %}
                 <tfoot>
                     <tr>
                         <td colspan="100">
@@ -42,6 +45,7 @@
                         </td>
                     </tr>
                 </tfoot>
+                {% endif %} 
             </table>
         </div>
     </div>

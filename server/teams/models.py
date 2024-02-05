@@ -42,6 +42,10 @@ class Team(models.Model):
     def is_complete(self):
         return self.get_num_members() == self.modality.team_size
 
+    def is_busy_at(self, start, end):
+        from competitions.models import SubscriptionStatus
+        return self.subscriptions.exclude(status=SubscriptionStatus.CANCELED).filter(competition__datetime__lt=end, competition__datetime_end__gt=start).exists()
+
 
 class TeamMember(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

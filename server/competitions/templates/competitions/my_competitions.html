@@ -24,7 +24,7 @@
                 {% for competition in organized_competitions %}
                     <tr>
                         <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:detail_competition' pk=competition.id%}">{{competition}}</a></td>
+                        <td><a href="{% url 'competitions:manage_competition' pk=competition.id%}">{{competition}}</a></td>
                         <td>{{competition.modality}}</td>
                         <td>{% if competition.max_slots %}{{competition.max_slots}}{% else %}Ilimitado{% endif %}</td>
                         <td>{{competition.subscription_until|date:"d/m/Y H:i"}}</td>
@@ -34,6 +34,7 @@
                             <a href="{{competition.get_absolute_url}}"><i class="material-icons">info</i></a>
                             <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a>
                             <a href="{% url 'competitions:assign_winners' pk=competition.id %}"><i class="material-icons">emoji_events</i></a>
+                            <a href="{% url 'competitions:add_document' competition_id=competition.id %}"><i class="material-icons">description</i></a>
                         </td>
                     </tr>
                 {% empty %}
@@ -51,43 +52,7 @@
     </div>
     {% endif %}
 </div>
-<div class="row">
-    <h2>Participações em Eventos</h2>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nome</th>
-                    <th>Modalidade</th>
-                    <th>Nº de Vagas</th>
-                    <th>Início</th>
-                    <th>Fim</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for competition in subscribed_events %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:detail_competition' pk=competition.id%}">{{competition}}</a></td>
-                        <td>{{competition.modality}}</td>
-                        <td>{% if competition.max_slots %}{{competition.max_slots}}{% else %}Ilimitado{% endif %}</td>
-                        <td>{{competition.datetime}}</td>
-                        <td>{{competition.datetime_end}}</td>
-                        <td>
-                            <a href="{{competition.get_absolute_url}}"><i class="material-icons">info</i></a>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="100">Você ainda não participou de eventos</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+
 <div class="row">
     <h2>Minhas Inscrições</h2>
     <div class="table-responsive">
@@ -107,8 +72,8 @@
                     <tr>
                         <td>{{forloop.counter}}</td>
                         <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription}}</a></td>
-                        <td>{{subscription.team}}</td>
-                        <td>{{subscription.status}}</td>
+                        <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
+                        <td>{{subscription.get_status_display}}</td>
                         <td>{{subscription.created_at}}</td>
                         <td>
                             <form action="{% url 'competitions:remove_subscription' pk=subscription.id%}" method="POST">
