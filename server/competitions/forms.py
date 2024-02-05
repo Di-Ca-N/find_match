@@ -7,6 +7,7 @@ from .models import (
     CompetitionSubscription,
     Team,
     CompetitionRate,
+    OrganizerRequest,
 )
 
 
@@ -123,3 +124,17 @@ class CompetitionDocumentForm(forms.ModelForm):
     class Meta:
         model = CompetitionDocument
         fields = ["competition", "name", "file"]
+
+
+class OrganizerRequestForm(forms.ModelForm):
+    class Meta:
+        model = OrganizerRequest
+        fields = [
+            "user",
+            "request_reason",
+        ]
+        widgets = {"user": forms.widgets.HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["user"].disabled = True

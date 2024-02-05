@@ -3,6 +3,7 @@ from django.forms import ValidationError
 from localflavor.br.models import BRStateField
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import Group
 
 from accounts.models import User
 from sports.models import Modality
@@ -256,10 +257,55 @@ class CompetitionDocument(models.Model):
 
     class Meta:
         verbose_name = "Documento de Competição"
-        verbose_name = "Documentos de Competição"
+        verbose_name_plural = "Documentos de Competições"
         constraints = [
             models.UniqueConstraint(
                 fields=["competition", "name"],
                 name="unique_document_name_per_competition",
             )
         ]
+
+
+class OrganizerRequestStatus(models.TextChoices):
+    PENDING = "PENDING", "Pendente"
+    APPROVED = "APPROVED", "Aprovada"
+    REJECTED = "REJECTED", "Rejeitada"
+
+
+class OrganizerRequest(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="organizer_requests"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    request_reason = models.TextField(verbose_name="Motivo da Solicitação")
+    status = models.CharField(
+        max_length=10,
+        choices=OrganizerRequestStatus.choices,
+        default=OrganizerRequestStatus.PENDING,
+    )
+
+    class Meta:
+        verbose_name = "Requisição de Conta de Organizador"
+        verbose_name_plural = "Requisições de Conta de Organizador"
+
+    def __str__(self):
+        return f"Requisição de {self.user.get_full_name()}"
+
+    def approve(self):
+        self.status = OrganizerRequestStatus.APPROVED
+        self.user.groups.add(Group.objects.get(name="organizers"))
+        self.save()
+
+    def reject(self):
+        self.status = OrganizerRequestStatus.REJECTED
+        self.save()
+
+    @staticmethod
+    def can_request_account(user: User):
+        account_age = timezone.now() - user.date_joined
+        num_competitions = (
+            CompetitionSubscription.objects.confirmed()
+            .filter(team__leader=user)
+            .count()
+        )
+        return account_age.days > 30 and num_competitions >= 5

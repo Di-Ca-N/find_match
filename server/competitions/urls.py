@@ -54,4 +54,9 @@ urlpatterns = [
         views.CancelSubscriptionView.as_view(),
         name="remove_subscription",
     ),
+    path(
+        "request_organizer_account/",
+        views.RequestOrganizerAccountView.as_view(),
+        name="request_organizer_account",
+    ),
 ]

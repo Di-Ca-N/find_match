@@ -25,6 +25,7 @@ from .models import (
     CompetitionResults,
     CompetitionDocument,
     SubscriptionStatus,
+    OrganizerRequest,
 )
 from .forms import (
     CompetitionForm,
@@ -32,6 +33,7 @@ from .forms import (
     CompetitionRateForm,
     CompetitionWinnersForm,
     CompetitionDocumentForm,
+    OrganizerRequestForm,
 )
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
@@ -226,6 +228,9 @@ class MyCompetitionsView(LoginRequiredMixin, TemplateView):
         context["pending_subscriptions"] = CompetitionSubscription.objects.filter(
             team__leader=self.request.user, status=SubscriptionStatus.PENDING
         )
+        context["show_become_organizer_button"] = OrganizerRequest.can_request_account(
+            self.request.user
+        )
         return context
 
 
@@ -309,3 +314,21 @@ class PaySubscriptionView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
             return self.form_invalid(form)
         instance.confirm()
         return super().form_valid(form)
+
+
+class RequestOrganizerAccountView(UserPassesTestMixin, LoginRequiredMixin, CreateView):
+    model = OrganizerRequest
+    form_class = OrganizerRequestForm
+    template_name = "competitions/request_organizer_account.html"
+    success_url = reverse_lazy("competitions:my_competitions")
+
+    def test_func(self):
+        return OrganizerRequest.can_request_account(self.request.user)
+
+    def get_initial(self) -> dict[str, Any]:
+        return {"user": self.request.user}
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Sua solicitação foi enviada e está sob revisão")
+        return response
