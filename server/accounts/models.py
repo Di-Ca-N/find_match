@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from localflavor.br.models import BRCPFField
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -10,6 +11,7 @@ class User(AbstractUser):
     )
     cpf = BRCPFField(null=True, unique=True, verbose_name="CPF")
     isOrganizer = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now, verbose_name=_("created at"))
 
     USERNAME_FIELD = "username"
 
@@ -30,3 +32,4 @@ class OrganizerRequest(models.Model):
 
     def __str__(self):
         return f"Pedido para virar organizador de {self.user.username}"
+    
