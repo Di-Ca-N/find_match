@@ -150,17 +150,9 @@ class SubscriptionQuerySet(models.QuerySet):
 
 class CompetitionSubscription(models.Model):
     competition = models.ForeignKey(
-        Competition,
-        on_delete=models.PROTECT,
-        verbose_name="Competição",
-        related_name="subscriptions",
+        Competition, on_delete=models.PROTECT, verbose_name="Competição", related_name="competition"
     )
-    team = models.ForeignKey(
-        Team,
-        on_delete=models.PROTECT,
-        verbose_name="Time",
-        related_name="subscriptions",
-    )
+    team = models.ForeignKey(Team, on_delete=models.PROTECT, verbose_name="Time", related_name="subscriptions")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
     status = models.CharField(
         max_length=10,
@@ -216,7 +208,7 @@ class CompetitionResults(models.Model):
         verbose_name_plural = "Resultados de Competições"
 
     def __str__(self):
-        return f"Resultado de {self.competition}"
+        return f"{self.team.name}"
 
 
 class RatingChoices(models.IntegerChoices):

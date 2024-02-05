@@ -40,6 +40,13 @@ class Team(models.Model):
 
     def is_complete(self):
         return self.get_num_members() == self.modality.team_size
+    
+    def get_subscriptions(self):
+        return self.subscriptions.all()
+    
+    def get_results(self):
+        return self.team_results.all()
+        
 
     def is_busy_at(self, start, end):
         return self.subscriptions.non_canceled().happening_between(start, end).exists()

@@ -88,16 +88,9 @@ class CompetitionRateForm(forms.ModelForm):
 
 
 class CompetitionWinnersForm(forms.ModelForm):
-    first_place = forms.ModelChoiceField(
-        queryset=Team.objects.none(), label="1st Place"
-    )
-    second_place = forms.ModelChoiceField(
-        queryset=Team.objects.none(), label="2nd Place"
-    )
-    third_place = forms.ModelChoiceField(
-        queryset=Team.objects.none(), label="3rd Place"
-    )
-
+    first_place = forms.ModelChoiceField(queryset=Team.objects.none(), label="1st Place")
+    second_place = forms.ModelChoiceField(queryset=Team.objects.none(), required=False, label="2nd Place")
+    third_place = forms.ModelChoiceField(queryset=Team.objects.none(), required=False, label="3rd Place")
     class Meta:
         model = CompetitionResults
         fields = []

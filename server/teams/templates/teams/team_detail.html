@@ -4,10 +4,9 @@
     <h1>Equipe: {{team}}</h1>
     <p>Modalidade: {{team.modality}}</p>
 
-    <h2> Integrantes </h2>
-
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-12 col-lg-6">
+            <h2> Integrantes </h2>
             <table class="table">
                 <thead>
                     <tr>
@@ -46,6 +45,46 @@
                     </tr>
                 </tfoot>
                 {% endif %} 
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <h2> Medalhas </h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Competição</th>
+                        <!-- <th>Resultado</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                {% for subscription in team.get_subscriptions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ subscription.competition.title }}</td>
+                        <td>
+                            {% for result in team.get_results %}
+                                {% if result.competition == subscription.competition %}
+                                    {% if result.place == 1 %}
+                                        <span class="badge bg-success">Ouro</span>
+                                    {% elif results.place == 2 %}
+                                        <span class="badge bg-danger">Prata</span>
+                                    {% elif results.place == 3 %}
+                                        <span class="badge bg-warning">Bronze</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Perdedor</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">Aguardando..</span>
+                                {% endif %}
+                            {% endfor %}  
+ 
+                        </td>   
+                    </tr>
+                {% endfor %}
+                </tbody> 
             </table>
         </div>
     </div>

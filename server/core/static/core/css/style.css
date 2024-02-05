@@ -106,16 +106,6 @@ li {
   color: var(--white);
 }
 
-@media (min-width: 992px) {
-  .home-banner {
-    height: 470px;
-  }
-
-  .map {
-    height: 620px;
-  }
-}
-
 .card-img-top {
   width: 100%;
   height: 15vw;
@@ -125,4 +115,89 @@ li {
   max-height: 400px;
   max-width: 300px;
   aspect-ratio: initial;
+}
+
+.podium-container {
+  position: relative;
+  height: 250px;
+}
+
+.podium-base {
+  width: 100%;
+  max-width: 500px;
+  height: 150px;
+  background-color: var(--green); 
+  position: absolute;
+  bottom: 0;
+}
+
+.podium-first {
+  width: 150px;
+  height: 100px;
+  background-color: var(--green);
+  position: absolute;
+  bottom: 150px; 
+}
+
+.podium-member {
+  position: absolute;
+  width: 150px;
+  text-align: center;
+}
+
+.podium-first-member {
+  bottom: 250px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.podium-second-member {
+  bottom: 150px;
+  left: -8%;
+}
+
+.podium-third-member {
+  bottom: 150px;
+  right: -8%;
+}
+
+@media (min-width: 556px) {
+  .podium-second-member {
+    left: 5%;
+  }
+  
+  .podium-third-member {
+    right: 5%;
+  }
+}
+@media (min-width: 768px) {
+  .podium-second-member {
+    left: 15%;
+  }
+  
+  .podium-third-member {
+    right: 15%;
+  }
+}
+@media (min-width: 992px) {
+  .home-banner {
+    height: 470px;
+  }
+
+  .map {
+    height: 620px;
+  }
+
+  .podium-first-member {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .podium-second-member {
+    left: 31%;
+  }
+  
+  .podium-third-member {
+    right: 31%;
+  }
 }
