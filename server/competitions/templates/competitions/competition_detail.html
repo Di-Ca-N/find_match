@@ -19,8 +19,8 @@
 
 
 {% block content %}
-    <div class="row px-2">
-        <div class="col-12">
+    <div class="row px-2 d-flex align-items-center">
+        <div class="col-12 col-lg-6">
             <p><b>Modalidade:</b> {{object.modality}}</p>
             {% if object.max_slots != 0%}
                 <p><b>Nº de vagas:</b> {{object.max_slots}}</p>
@@ -29,15 +29,29 @@
                 <p><b>Endereço:</b> {{object.city}}/{{object.state}} - {{object.address}}</p>
             {% endif %}
             <p><b>Preço de Inscrição:</b> {% if competition.subscription_price > 0 %}R${{competition.subscription_price}}{% else %}Gratuito{% endif %}</p>
+            <p class="text-justify">{{object.description}}</p>
         </div>
-      <div class="col-12">
-        <p class="text-justify">{{object.description}}</p>
+      <div class="col-12 col-lg-6">
+        <img src="{{object.image.url}}" alt="" class="img-event mt-5 mt-lg-0" width="100%">
       </div>
     </div>
     <div class="row d-flex justify-content-center">
-        <img src="{{object.image.url}}" alt="" class="img-event m-5">
+        {% if not object.competition_ended %}
         <div class="col-12">
             <a href="{% url 'competitions:competition_subscribe' pk=object.id %}" class="btn btn-find-match">Inscrever-se</a>
         </div>
+        {% else %}
+        <div class="col-12">
+            <h3 class="text-start fw-bold">Resultados</h3>
+            <div class="podium-container d-flex justify-content-center">
+                <div class="podium-member podium-first-member">Member 1</div>
+                <div class="podium-member podium-second-member">Member 2</div>
+                <div class="podium-member podium-third-member">Member 3</div>
+                <div class="d-flex justify-content-center align-items-center podium-base">
+                    <div class="podium podium-first"></div>
+                </div>
+            </div>     
+        </div>
+        {% endif %}
     </div>
 {% endblock %}
