@@ -38,6 +38,8 @@ from .forms import (
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 class CompetitionListView(ListView):
     model = Competition
@@ -351,3 +353,19 @@ class CompetitionDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(organizer=self.request.user)
+    
+def load_dashboard_content(request):
+    list_type = request.GET.get('type')
+    template_name = f'competitions/_{list_type}.html'
+    # Aqui você determina qual lista carregar com base em 'list_type'
+    # Exemplo: Carregando diferentes querysets ou contextos para cada lista
+    # if list_type == 'organized-events':
+    #     template_name = 'competitions/my/_organized_events.html'
+    # elif list_type == 'lista2':
+    #     context = {'items': Lista2.objects.all()}
+    # else:
+    #     context = {'items': []}
+    
+    # Renderize um template parcial com os itens da lista
+    html = render_to_string('partials/list_template.html', template_name, request=request)
+    return HttpResponse(html)

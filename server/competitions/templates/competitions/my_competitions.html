@@ -3,113 +3,73 @@
 {% block content %}
 <h1>Meus Eventos</h1>
 
-{% if perms.competitions.add_competition %}
-<div class="row my-5">
-    <h2>Eventos organizados</h2>
-    <div class="table-responsive-sm">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Nome</th>
-                    <th>Modalidade</th>
-                    <th>Vagas</th>
-                    <th>Prazo de Inscrição</th>
-                    <th>Início</th>
-                    <th>Término</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for competition in organized_competitions %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:manage_competition' pk=competition.id%}">{{competition}}</a></td>
-                        <td>{{competition.modality}}</td>
-                        <td>{% if competition.max_slots %}{{competition.max_slots}}{% else %}Ilimitado{% endif %}</td>
-                        <td>{{competition.subscription_until|date:"d/m/Y H:i"}}</td>
-                        <td>{{competition.datetime|date:"d/m/Y H:i"}}</td>
-                        <td>{{competition.datetime_end|date:"d/m/Y H:i"}}</td>
-                        <td>
-                            <a href="{{competition.get_absolute_url}}"><i class="material-icons">info</i></a>
-                            <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a>
-                            <a href="{% url 'competitions:assign_winners' pk=competition.id %}"><i class="material-icons">emoji_events</i></a>
-                            <a href="{% url 'competitions:add_document' competition_id=competition.id %}"><i class="material-icons">description</i></a>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="100">Você nunca organizou um evento</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <td colspan="100">
-                    <a href="{% url 'competitions:create_competition' %}" class="btn btn-find-match login">Criar Competição</a>
-                </div>
-            </tfoot>
-        </table>
-    </div>
-</div>
-{% elif show_become_organizer_button %}
-    
-{% endif %}
-
-<div class="row mt-3">
-    <h2>Inscrições</h2>
-    <div class="table-responsive col-lg-6">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Competição</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th>Data de inscrição</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subscription in pending_subscriptions %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
-                        <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
-                        <td>{{subscription.get_status_display}}</td>
-                        <td>{{subscription.created_at}}</td>
-                        <td>
-                            {% if subscription.is_pending %}
-                                <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
-                                    <i class="material-icons">attach_money</i>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% for subscription in confirmed_subscriptions %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
-                        <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
-                        <td>{{subscription.get_status_display}}</td>
-                        <td>{{subscription.created_at}}</td>
-                        <td>
-                            {% if subscription.is_pending %}
-                                <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
-                                    <i class="material-icons">attach_money</i>
-                                </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% if not confirmed_subscriptions and not pending_subscriptions %}
-                    <tr>
-                        <td colspan="100">Você ainda não se inscreveu em eventos</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+<div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse dashboard-menu">
+        <div class="position-sticky pt-3 sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item" data-list="dashboard">
+              <a class="nav-link active d-flex align-items-center" aria-current="page" href="#">
+                <i class="material-icons">home</i>
+                Dashboard
+              </a>
+            </li>
+            {% if perms.competitions.add_competition %}
+            <li class="nav-item d-flex align-items-center" data-list="organized-events">
+              <a class="nav-link" href="#">
+                <i class="material-icons">emoji_events</i>
+                Eventos Organizados
+              </a>
+            </li>
+            {% endif %}
+            <li class="nav-item d-flex align-items-center" data-list="subscriptions">
+              <a class="nav-link" href="#">
+                <i class="material-icons">card_membership</i>
+                Inscrições
+              </a>
+            </li>
+            <li class="nav-item d-flex align-items-center" data-list="teams">
+              <a class="nav-link" href="#">
+                <i class="material-icons">diversity_1</i>
+                Meus Times
+              </a>
+            </li>
+            {% if not perms.competitions.add_competition %}
+            {show_become_organizer_button}
+            <li class="nav-item" data-list="become-organizer">
+              <a class="nav-link d-flex align-items-center" href="#">
+                <i class="material-icons">design_services</i>
+                torne-se um organizador
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+  
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 dashboard-content">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Dashboard</h1>
+          <div class="btn-toolbar mb-2 mb-md-0">
+          </div>
+        </div>
+        <h3>Bem-vindo ao seu dashboard, selecione uma opção ao lado.</h3>
+      </main>
     </div>
 </div>
 
+<script>
+    document.querySelectorAll('.dashboard-menu li').forEach(item => {
+        item.addEventListener('click', function() {
+            const listType = this.getAttribute('data-list');
+            
+            fetch(`/dashboard/load-content/?type=${listType}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dashboard-content').innerHTML = html;
+                })
+                .catch(error => console.error('Error loading the content:', error));
+        });
+    });
+</script>
 {% endblock content %}

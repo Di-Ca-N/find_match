@@ -1,0 +1,56 @@
+<div class="row mt-3">
+  <h2>Inscrições</h2>
+  <div class="table-responsive col-lg-6">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Competição</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Data de inscrição</th>
+                  <th></th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for subscription in pending_subscriptions %}
+                  <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
+                      <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
+                      <td>{{subscription.get_status_display}}</td>
+                      <td>{{subscription.created_at}}</td>
+                      <td>
+                          {% if subscription.is_pending %}
+                              <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
+                                  <i class="material-icons">attach_money</i>
+                              </a>
+                          {% endif %}
+                      </td>
+                  </tr>
+              {% endfor %}
+              {% for subscription in confirmed_subscriptions %}
+                  <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td><a href="{% url 'competitions:detail_competition' pk=subscription.competition.id%}">{{subscription.competition}}</a></td>
+                      <td><a href="{% url 'teams:detail_team' pk=subscription.team.id%}">{{subscription.team}}</a></td>
+                      <td>{{subscription.get_status_display}}</td>
+                      <td>{{subscription.created_at}}</td>
+                      <td>
+                          {% if subscription.is_pending %}
+                              <a href="{% url 'competitions:pay_subscription' pk=subscription.id%}" class="text-success">
+                                  <i class="material-icons">attach_money</i>
+                              </a>
+                          {% endif %}
+                      </td>
+                  </tr>
+              {% endfor %}
+              {% if not confirmed_subscriptions and not pending_subscriptions %}
+                  <tr>
+                      <td colspan="100">Você ainda não se inscreveu em eventos</td>
+                  </tr>
+              {% endif %}
+          </tbody>
+      </table>
+  </div>
+</div>

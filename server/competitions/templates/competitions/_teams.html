@@ -1,0 +1,43 @@
+<div class="row mt-3">
+  <h1>Times</h1>
+    
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Equipe</th>
+                    <th>Modalidade</th>
+                    <th>Nº de Integrantes</th>
+                    <th>Completo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in object_list %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'teams:detail_team' pk=team.id%}">{{team}}</a></td>
+                        <td>{{team.modality}}</td>
+                        <td>{{team.get_num_members}}/{{team.modality.team_size}}</td>
+                        <td>{{team.is_complete|yesno:"Sim,Não"}}</td>
+                        <td>
+                            <a href="{{team.get_absolute_url}}"><i class="material-icons">info</i></a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="100">Você não faz parte de nenhum time</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <td colspan="100">
+                    {% if perms.teams.add_team %}
+                        <a href="{% url 'teams:create_team' %}" class="btn btn-find-match login">Criar time</a>
+                    {% endif %}
+                </div>
+            </tfoot>
+        </table>
+    </div>
+</div>
