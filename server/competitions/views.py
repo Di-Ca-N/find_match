@@ -35,13 +35,26 @@ from .forms import (
     CompetitionDocumentForm,
     OrganizerRequestForm,
 )
+from .filters import CompetitionFilter
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
 
 class CompetitionListView(ListView):
     model = Competition
+    template_name = 'competition_list.html'
+    context_object_name = 'competitions'
+    # paginate_by = 20 Ajustar o numero de itens por paginas
 
+    def get_queryset(self):
+        queryset = Competition.objects.all()
+        competition_filter = CompetitionFilter(self.request.GET, queryset=queryset)
+        return competition_filter.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = CompetitionFilter(self.request.GET, queryset=self.get_queryset())
+        return context
 
 class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Competition

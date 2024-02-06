@@ -11,7 +11,6 @@ from teams.models import Team
 
 from django.db.models import Q
 
-
 class CompetitionManager(models.Manager):
     def finalized(self):
         return self.filter(datetime_end__lt=timezone.now())
@@ -21,7 +20,6 @@ class CompetitionManager(models.Manager):
 
     def upcoming(self):
         return self.filter(datetime__gt=timezone.now())
-
 
 class Competition(models.Model):
     organizer = models.ForeignKey(
