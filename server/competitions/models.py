@@ -294,6 +294,7 @@ class OrganizerRequest(models.Model):
 
     def reject(self):
         self.status = OrganizerRequestStatus.REJECTED
+        self.user.groups.remove(Group.objects.get(name="organizers"))
         self.save()
 
     @staticmethod
@@ -306,4 +307,4 @@ class OrganizerRequest(models.Model):
             .filter(team__leader=user)
             .count()
         )
-        return account_age.days > 30 and num_competitions >= 5
+        return account_age.days > 30 and num_competitions >= 5 and not user.groups.filter(name="organizers").exists()

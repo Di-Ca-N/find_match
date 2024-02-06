@@ -5,7 +5,7 @@
     <hr>
 
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <h2>Dados da Competição <a href="{% url 'competitions:update_competition' pk=competition.id %}"><i class="material-icons">edit</i></a></h2>
             <hr>
             <ul>
@@ -14,7 +14,13 @@
                 <li><strong>Modalidade:</strong> {{object.modality}} </li>
                 <li><strong>Local:</strong> {{object.address}} - {{object.city}}/{{object.state}}</li>
                 <li><strong>Prazo de Inscrições:</strong> {{object.subscription_until}}</li>
-                <li><strong>Preço de Inscrição:</strong> {%if object.subscription_price == 0%}Gratuito{%else %}R$ {{object.subscription_price}}{%endif%}</li>
+                <li><strong>Preço de Inscrição:</strong> 
+                    {% if total_ratings > 0 %}
+                        {{ average_rating|floatformat }} ({{ total_ratings }} avaliações)
+                    {% else %}
+                        Sem avaliações ainda
+                    {% endif %}
+                </li>
             </ul>
         </div>
     </div>
@@ -117,4 +123,6 @@
             </table>
         </div>
     </div>
+
+
 {% endblock content %}

@@ -38,6 +38,7 @@ from .forms import (
 from .filters import CompetitionFilter
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.db.models import Avg
 
 
 class CompetitionListView(ListView):
@@ -298,8 +299,19 @@ class ManageCompetitionView(CompetitionManagementBaseView, DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["confirmed_subscriptions"] = self.get_object().subscriptions.confirmed()
-        context["pending_subscriptions"] = self.get_object().subscriptions.pending()
+        competition = self.get_object()
+        
+        # Calcula a média das avaliações
+        average_rating = competition.ratings.aggregate(Avg('rating'))['rating__avg']
+        
+        # Número total de avaliações
+        total_ratings = competition.ratings.all().count()
+
+        context["confirmed_subscriptions"] = competition.subscriptions.confirmed()
+        context["pending_subscriptions"] = competition.subscriptions.pending()
+        context["total_ratings"] = total_ratings
+        context["average_rating"] = average_rating
+        
         return context
 
 
