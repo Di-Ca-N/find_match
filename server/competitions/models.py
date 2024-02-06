@@ -76,9 +76,9 @@ class Competition(models.Model):
 
     def can_evaluate_competition(self, user):
         user_already_evaluated = self.raters.filter(pk=user.id).exists()
-
+        user_is_subscribed = self.subscriptions.confirmed().filter(team__leader=user).exists()
         # ToDo: Adicionar restrição de usuário estar cadastrado na competição
-        return not user_already_evaluated and self.competition_ended()
+        return not user_already_evaluated and self.competition_ended() and user_is_subscribed
 
     def confirmed_subscriptions(self):
         return self.subscriptions.filter(status=SubscriptionStatus.CONFIRMED)
@@ -90,6 +90,9 @@ class Competition(models.Model):
         )
 
     def check_team_subscription(self, team):
+        if timezone.now() > self.subscription_until:
+            raise ValidationError("Prazo de inscrição já acabou")
+
         if not self.has_open_slots():
             raise ValidationError("Competição não tem vagas")
 
@@ -117,7 +120,7 @@ class Competition(models.Model):
                 competition=self,
             ).exists():
                 raise ValidationError(
-                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
+                    f"O membro {member.get_full_name()} já está inscrito nessa competição em outro time."
                 )
 
 
@@ -141,9 +144,12 @@ class SubscriptionQuerySet(models.QuerySet):
         return self.filter(status=SubscriptionStatus.CANCELED)
 
     def happening_between(self, start, end):
-        return self.filter(
+        print(self)
+        a = self.filter(
             competition__datetime__lt=end, competition__datetime_end__gt=start
         )
+        print(a)
+        return a
 
 
 class CompetitionSubscription(models.Model):
@@ -288,6 +294,7 @@ class OrganizerRequest(models.Model):
 
     def reject(self):
         self.status = OrganizerRequestStatus.REJECTED
+        self.user.groups.remove(Group.objects.get(name="organizers"))
         self.save()
 
     @staticmethod
@@ -298,4 +305,4 @@ class OrganizerRequest(models.Model):
             .filter(team__leader=user)
             .count()
         )
-        return account_age.days > 30 and num_competitions >= 5
+        return account_age.days > 30 and num_competitions >= 5 and not user.groups.filter(name="organizers").exists()

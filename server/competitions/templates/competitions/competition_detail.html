@@ -35,10 +35,19 @@
         <img src="{{object.image.url}}" alt="" class="img-event mt-5 mt-lg-0" width="100%">
       </div>
     </div>
+    <div class="row">
+        <h2>Documentos</h2>
+        <ol>
+            {% for document in competition.documents.all %}
+                <ol><a href="{{document.file.url}}">{{document.name}}</a></li>
+            {% endfor %}
+        </ol>
+
+    </div>
     <div class="row d-flex justify-content-center">
         {% if not object.competition_ended %}
         <div class="col-12">
-            <a href="{% url 'competitions:competition_subscribe' competition_id=object.id %}" class="btn btn-find-match">Inscrever-se</a>
+            <a href="{% url 'competitions:competition_subscribe' pk=object.id %}" class="btn btn-find-match">Inscrever-se</a>
         </div>
         {% else %}
         <div class="col-12">
@@ -62,9 +71,11 @@
             <p>Aguardando análise dos resultados...</p>
             {% endif %}  
         </div>
-        <div class="col-12">
-            <a href="{% url 'competitions:rate_competition' competition_id=object.id %}" class="btn btn-find-match">Avaliar</a>
-        </div>
+        {% if user_can_evaluate_competition %}
+            <div class="col-12">
+                <a href="{% url 'competitions:rate_competition' competition_id=object.id %}" class="btn btn-find-match">Avaliar</a>
+            </div>
+        {% endif %}
         {% endif %}
     </div>
 {% endblock %}

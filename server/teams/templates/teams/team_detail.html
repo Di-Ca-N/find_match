@@ -50,7 +50,7 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-6">
-            <h2> Medalhas </h2>
+            <h2> Participações em Competições </h2>
             <table class="table">
                 <thead>
                     <tr>
@@ -66,12 +66,13 @@
                         <td>{{ subscription.competition.title }}</td>
                         <td>
                             {% for result in team.get_results %}
+                           
                                 {% if result.competition == subscription.competition %}
                                     {% if result.place == 1 %}
                                         <span class="badge bg-success">Ouro</span>
-                                    {% elif results.place == 2 %}
+                                    {% elif result.place == 2 %}
                                         <span class="badge bg-danger">Prata</span>
-                                    {% elif results.place == 3 %}
+                                    {% elif result.place == 3 %}
                                         <span class="badge bg-warning">Bronze</span>
                                     {% else %}
                                         <span class="badge bg-secondary">Perdedor</span>
@@ -80,9 +81,10 @@
                                     <span class="badge bg-secondary">Aguardando..</span>
                                 {% endif %}
                             {% endfor %}  
- 
                         </td>   
                     </tr>
+                {% empty%}
+                    <tr><td colspan="100">Nenhuma participação registrada</td></tr>
                 {% endfor %}
                 </tbody> 
             </table>

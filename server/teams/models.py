@@ -46,7 +46,6 @@ class Team(models.Model):
     
     def get_results(self):
         return self.team_results.all()
-        
 
     def is_busy_at(self, start, end):
         return self.subscriptions.non_canceled().happening_between(start, end).exists()

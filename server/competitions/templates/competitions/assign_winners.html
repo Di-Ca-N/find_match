@@ -1,36 +1,20 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Atribuir Ganhadores para a Competição</h2>
+<h2>Atribuir Ganhadores para a Competição: {{competition}}</h2>
 
-<form method="post">
-  {% csrf_token %}
-  
-  <div class="form-group">
-      <label for="first_place">Primeiro Lugar:</label>
-      {{ form.first_place }}
-      {% for error in form.first_place.errors %}
-          <p>{{ error }}</p>
-      {% endfor %}
-  </div>
+<div class="row">
+    <div class="col-lg-4 col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            
+            {{form|crispy}}
+          
+            <button type="submit" class="btn btn-find-match mt-3">Salvar Ganhadores</button>
+          </form>
+    </div>
+</div>
 
-  <div class="form-group mt-3">
-      <label for="second_place">Segundo Lugar:</label>
-      {{ form.second_place }}
-      {% for error in form.second_place.errors %}
-          <p>{{ error }}</p>
-      {% endfor %}
-  </div>
-
-  <div class="form-group mt-3">
-      <label for="third_place">Terceiro Lugar:</label>
-      {{ form.third_place }}
-      {% for error in form.third_place.errors %}
-          <p>{{ error }}</p>
-      {% endfor %}
-  </div>
-
-  <button type="submit" class="btn btn-find-match mt-3">Salvar Ganhadores</button>
-</form>
 
 {% endblock %}
