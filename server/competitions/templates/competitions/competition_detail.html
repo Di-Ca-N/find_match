@@ -35,6 +35,15 @@
         <img src="{{object.image.url}}" alt="" class="img-event mt-5 mt-lg-0" width="100%">
       </div>
     </div>
+    <div class="row">
+        <h2>Documentos</h2>
+        <ol>
+            {% for document in competition.documents.all %}
+                <ol><a href="{{document.file.url}}">{{document.name}}</a></li>
+            {% endfor %}
+        </ol>
+
+    </div>
     <div class="row d-flex justify-content-center">
         {% if not object.competition_ended %}
         <div class="col-12">
