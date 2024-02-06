@@ -21,8 +21,6 @@ class CompetitionManager(models.Manager):
     def upcoming(self):
         return self.filter(datetime__gt=timezone.now())
 
-import django_filters
-
 class Competition(models.Model):
     organizer = models.ForeignKey(
         User, on_delete=models.PROTECT, verbose_name="Organizador"
