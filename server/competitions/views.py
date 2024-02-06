@@ -352,3 +352,15 @@ class RequestOrganizerAccountView(UserPassesTestMixin, LoginRequiredMixin, Creat
         response = super().form_valid(form)
         messages.success(self.request, "Sua solicitação foi enviada e está sob revisão")
         return response
+
+class CompetitionDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Competition
+    success_url = reverse_lazy("competitions:my_competitions")
+
+    def test_func(self):
+        competition = self.get_object()
+        return self.request.user == competition.organizer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(organizer=self.request.user)

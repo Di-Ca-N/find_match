@@ -16,6 +16,14 @@
                     </div>
                 </div>
                 <a href="{% url 'competitions:detail_competition' pk=competition.id %}" class="btn btn-find-match align-items-center d-flex">Ver Evento</a>
+               
+                {% if competition.organizer == request.user %}
+                    <form action="{% url 'competitions:delete_competition' pk=competition.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Excluir">
+                    </form>
+                {% endif %}
+                
             </div>
         </div>
     </div>
