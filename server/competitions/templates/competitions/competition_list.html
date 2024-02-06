@@ -15,19 +15,12 @@
 {% endblock pre-content %}
 
 {% block content %}
-
-  <!-- <form method="get">
-    {{ filter.form.as_p }}
-    <button type="submit">Filter</button>
-  </form> -->
-
   {% load widget_tweaks %}
   <div class="row mx-auto px-0">
     <div class="col-12">
-      <h2 class="text-center fs-24">Pesquisar evento Específico</h2>
       <form method="get" action="{% url 'competitions:list_competition' %}">
         <div class="row">
-          <div class="col-3 mb-3">
+          <div class="col-3 mb-2">
             <label for="data" class="form-label">Data</label>
             <input type="data" class="form-control" id="data" placeholder="Ex: mês/ano">
           </div>
@@ -35,14 +28,18 @@
             <label for="city" class="form-label">Cidade</label>
             {{ filter.form.city|add_class:"form-control" }}
           </div>
-          <div class="col-3 mb-3">
+          <div class="col-2 mb-3">
             <label for="modality" class="form-label">Modalidade</label>
             {{ filter.form.modality|add_class:"form-control" }}
           </div>
-          <div class="col-1 mb-3">
+          <div class="col-2 mb-3">
+            <label for="sport" class="form-label">Esporte</label>
+            {{ filter.form.sport|add_class:"form-control" }}
+          </div>
+          <!-- <div class="col-1 mb-3">
             <label for="subscription_price" class="form-label">Preço</label>
             {{ filter.form.state|add_class:"form-control" }}
-          </div>
+          </div> -->
           <!-- <div class="col-2 mb-3">
             <span class="input-group-text">Preço <</span>
             {{ filter.form.subscription_price__lt|add_class:"form-control" }}

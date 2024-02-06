@@ -24,7 +24,6 @@ from .models import (
     CompetitionRate,
     CompetitionResults,
     CompetitionDocument,
-    CompetitionFilter,
     SubscriptionStatus,
     OrganizerRequest,
 )
@@ -36,6 +35,7 @@ from .forms import (
     CompetitionDocumentForm,
     OrganizerRequestForm,
 )
+from .filters import CompetitionFilter
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
