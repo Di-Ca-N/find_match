@@ -90,6 +90,9 @@ class Competition(models.Model):
         )
 
     def check_team_subscription(self, team):
+        if timezone.now() > self.subscription_until:
+            raise ValidationError("Prazo de inscrição já acabou")
+
         if not self.has_open_slots():
             raise ValidationError("Competição não tem vagas")
 
@@ -117,7 +120,7 @@ class Competition(models.Model):
                 competition=self,
             ).exists():
                 raise ValidationError(
-                    f"O membro {member.get_full_name()} já está inscrito em outra competição no mesmo horário."
+                    f"O membro {member.get_full_name()} já está inscrito nessa competição em outro time."
                 )
 
 
@@ -141,9 +144,12 @@ class SubscriptionQuerySet(models.QuerySet):
         return self.filter(status=SubscriptionStatus.CANCELED)
 
     def happening_between(self, start, end):
-        return self.filter(
+        print(self)
+        a = self.filter(
             competition__datetime__lt=end, competition__datetime_end__gt=start
         )
+        print(a)
+        return a
 
 
 class CompetitionSubscription(models.Model):

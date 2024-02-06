@@ -26,7 +26,7 @@
                         <td>{{forloop.counter}}</td>
                         <td><a href="{% url 'competitions:manage_competition' pk=competition.id%}">{{competition}}</a></td>
                         <td>{{competition.modality}}</td>
-                        <td>{% if competition.max_slots %}{{competition.max_slots}}{% else %}Ilimitado{% endif %}</td>
+                        <td>{{competition.subscriptions.confirmed.count}}/{% if competition.max_slots %}{{competition.max_slots}}{% else %}Ilimitado{% endif %}</td>
                         <td>{{competition.subscription_until|date:"d/m/Y H:i"}}</td>
                         <td>{{competition.datetime|date:"d/m/Y H:i"}}</td>
                         <td>{{competition.datetime_end|date:"d/m/Y H:i"}}</td>

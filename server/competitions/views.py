@@ -60,6 +60,7 @@ class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
     model = Competition
     form_class = CompetitionForm
     permission_required = "competitions.add_competition"
+    success_url = reverse_lazy("competitions:my_competitions")
 
     def get_initial(self):
         return {"organizer": self.request.user}
