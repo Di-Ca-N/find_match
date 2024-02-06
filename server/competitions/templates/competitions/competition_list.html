@@ -56,20 +56,6 @@
       </form>
     </div>
   </div>
-
-  <!-- <ul>
-    {% for competition in competitions %}
-      <li>{{ competition.name }} - {{ competition.datetime }} - {{ competition.city }} - {{ competition.state }}</li>
-    {% endfor %}
-  </ul> -->
-    <!-- {% if perms.competitions.add_competition %}
-    <div class="row pb-3">
-      <div>
-          <a href="{% url 'competitions:create_competition' %}" class="btn btn-find-match login">Criar competição</a>
-      </div>
-    </div>
-    {% endif %} -->
-
     <div class="row">
         {% for competition in object_list %}
             {% include "competitions/competition_card.html" %}
@@ -77,7 +63,7 @@
     </div>
 {% endblock content %}
 
-  <form method="get">
+  <!-- <form method="get">
     {{ filter.form.as_p }}
     <button type="submit">Filter</button>
   </form>
@@ -85,4 +71,4 @@
     {% for competition in competitions %}
       <li>{{ competition.name }} - {{ competition.datetime }} - {{ competition.city }} - {{ competition.state }}</li>
     {% endfor %}
-  </ul>
+  </ul> -->

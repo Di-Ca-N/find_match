@@ -299,4 +299,3 @@ class OrganizerRequest(models.Model):
             .count()
         )
         return account_age.days > 30 and num_competitions >= 5
-    
