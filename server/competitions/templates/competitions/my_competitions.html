@@ -3,6 +3,11 @@
 {% block content %}
 <h1>Meus Eventos</h1>
 
+{% if show_become_organizer_button %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'competitions:request_organizer_account' %}">Torne-se um organizador</a>
+</li>
+{% endif %}
 {% if perms.competitions.add_competition %}
 <div class="row my-5">
     <h2>Eventos organizados</h2>
