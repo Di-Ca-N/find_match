@@ -76,9 +76,9 @@ class Competition(models.Model):
 
     def can_evaluate_competition(self, user):
         user_already_evaluated = self.raters.filter(pk=user.id).exists()
-
+        user_is_subscribed = self.subscriptions.confirmed().filter(team__leader=user).exists()
         # ToDo: Adicionar restrição de usuário estar cadastrado na competição
-        return not user_already_evaluated and self.competition_ended()
+        return not user_already_evaluated and self.competition_ended() and user_is_subscribed
 
     def confirmed_subscriptions(self):
         return self.subscriptions.filter(status=SubscriptionStatus.CONFIRMED)
