@@ -14,7 +14,7 @@
                 <li><strong>Modalidade:</strong> {{object.modality}} </li>
                 <li><strong>Local:</strong> {{object.address}} - {{object.city}}/{{object.state}}</li>
                 <li><strong>Prazo de Inscrições:</strong> {{object.subscription_until}}</li>
-                <li><strong>Preço de Inscrição:</strong> 
+                <li><strong>Avaliações:</strong> 
                     {% if total_ratings > 0 %}
                         {{ average_rating|floatformat }} ({{ total_ratings }} avaliações)
                     {% else %}
