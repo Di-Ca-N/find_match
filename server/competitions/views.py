@@ -357,15 +357,7 @@ class CompetitionDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 def load_dashboard_content(request):
     list_type = request.GET.get('type')
     template_name = f'competitions/_{list_type}.html'
-    # Aqui você determina qual lista carregar com base em 'list_type'
-    # Exemplo: Carregando diferentes querysets ou contextos para cada lista
-    # if list_type == 'organized-events':
-    #     template_name = 'competitions/my/_organized_events.html'
-    # elif list_type == 'lista2':
-    #     context = {'items': Lista2.objects.all()}
-    # else:
-    #     context = {'items': []}
     
     # Renderize um template parcial com os itens da lista
-    html = render_to_string('partials/list_template.html', template_name, request=request)
+    html = render_to_string(template_name, request=request)
     return HttpResponse(html)

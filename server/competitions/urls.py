@@ -63,6 +63,6 @@ urlpatterns = [
          "competitions/<int:pk>/delete",
          views.CompetitionDeleteView.as_view(),
          name="delete_competition"),
-    path('dashboard/load-content/', views.load_dashboard_content, name='get_dashboard_list'),
+    path('my/load-content/', views.load_dashboard_content, name='get_dashboard_list'),
          
 ]

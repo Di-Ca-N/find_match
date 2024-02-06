@@ -9,7 +9,7 @@
         <div class="position-sticky pt-3 sidebar-sticky">
           <ul class="nav flex-column">
             <li class="nav-item" data-list="dashboard">
-              <a class="nav-link active d-flex align-items-center" aria-current="page" href="#">
+              <a class="nav-link active d-flex align-items-center" aria-current="page" href="">
                 <i class="material-icons">home</i>
                 Dashboard
               </a>
@@ -23,13 +23,13 @@
             </li>
             {% endif %}
             <li class="nav-item d-flex align-items-center" data-list="subscriptions">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="">
                 <i class="material-icons">card_membership</i>
                 Inscrições
               </a>
             </li>
             <li class="nav-item d-flex align-items-center" data-list="teams">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="">
                 <i class="material-icons">diversity_1</i>
                 Meus Times
               </a>
@@ -37,7 +37,7 @@
             {% if not perms.competitions.add_competition %}
             {show_become_organizer_button}
             <li class="nav-item" data-list="become-organizer">
-              <a class="nav-link d-flex align-items-center" href="#">
+              <a class="nav-link d-flex align-items-center" href="">
                 <i class="material-icons">design_services</i>
                 torne-se um organizador
               </a>
@@ -63,7 +63,7 @@
         item.addEventListener('click', function() {
             const listType = this.getAttribute('data-list');
             
-            fetch(`/dashboard/load-content/?type=${listType}`)
+            fetch(`competitions/load-content/?type=${listType}`)
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('dashboard-content').innerHTML = html;
