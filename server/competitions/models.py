@@ -298,6 +298,8 @@ class OrganizerRequest(models.Model):
 
     @staticmethod
     def can_request_account(user: User):
+        if user.groups.filter(name="organizers").exists():
+            return False
         account_age = timezone.now() - user.date_joined
         num_competitions = (
             CompetitionSubscription.objects.confirmed()
