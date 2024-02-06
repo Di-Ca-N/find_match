@@ -339,3 +339,16 @@ class RequestOrganizerAccountView(UserPassesTestMixin, LoginRequiredMixin, Creat
         response = super().form_valid(form)
         messages.success(self.request, "Sua solicitação foi enviada e está sob revisão")
         return response
+
+class CompetitionDeleteView(DeleteView):
+    model = Competition
+    success_url = reverse_lazy("competitions:my_competitions")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(organizer=self.request.user)
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_object().organizer == self.request.user:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)

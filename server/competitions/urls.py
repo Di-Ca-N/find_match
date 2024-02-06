@@ -59,4 +59,8 @@ urlpatterns = [
         views.RequestOrganizerAccountView.as_view(),
         name="request_organizer_account",
     ),
+    path(
+         "competitions/<int:pk>/delete",
+         views.CompetitionDeleteView.as_view(),
+         name="delete_competition")
 ]

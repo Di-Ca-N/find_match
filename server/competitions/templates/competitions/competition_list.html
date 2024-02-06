@@ -21,3 +21,16 @@
         {% endfor %}
     </div>
 {% endblock content %}
+
+{% for Competition in competitions %}
+    <div>
+        <p>{{ competition.title }}</p>
+        <p>{{ competition.description }}</p>
+        {% if competition.organizer == request.user %}
+            <form action="{% url 'delete_competition' pk=competition.pk %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Excluir">
+            </form>
+        {% endif %}
+    </div>
+{% endfor %}
