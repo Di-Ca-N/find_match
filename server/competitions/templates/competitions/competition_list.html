@@ -20,9 +20,9 @@
     <div class="col-12">
       <form method="get" action="{% url 'competitions:list_competition' %}">
         <div class="row">
-          <div class="col-3 mb-2">
-            <label for="data" class="form-label">Data</label>
-            <input type="date" class="form-control" id="data" name="datetime" placeholder="Ex: mês/ano">
+          <div class="col-2 mb-2">
+            {% comment %} <label for="data" class="form-label">Data</label>
+            <input type="date" class="form-control" id="data" name="datetime" placeholder="Ex: mês/ano"> {% endcomment %}
           </div>
           <div class="col-3 mb-3">
             <label for="city" class="form-label">Cidade</label>

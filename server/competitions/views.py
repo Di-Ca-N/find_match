@@ -88,7 +88,7 @@ class CompetitionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context[
             "user_can_evaluate_competition"
-        ] = self.get_object().can_evaluate_competition(self.request.user)
+        ] = self.request.user.is_authenticated and self.get_object().can_evaluate_competition(self.request.user)
         context["team_winners"] =  team_winners
         return context
 
